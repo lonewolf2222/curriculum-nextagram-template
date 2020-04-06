@@ -40,7 +40,9 @@ def create():
         errors.append("Password must have at least one special character")
     
     if len(errors) != 0:
-        return render_template('users/new.html', errors=errors)
+        for e in errors:
+            flash(e)
+        return redirect(url_for('users.new'))
     else:
         hashed_password = generate_password_hash(password)
         user = User(username = username, password = hashed_password, email = email)
@@ -49,7 +51,10 @@ def create():
             flash("Your account has been created")
             return redirect(url_for('home'))
         else:
-            return render_template('users/new.html', errors=user.errors)
+            errors = user.errors
+            for e in errors:
+                flash(e)
+            return redirect(url_for('users.new'))
 
 @users_blueprint.route('/<username>', methods=["GET"])
 def show(username):
