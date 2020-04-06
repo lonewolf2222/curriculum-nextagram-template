@@ -18,6 +18,9 @@ def create():
     username = request.form.get('username')
     password = request.form.get('password')
     email = request.form.get('email')
+    username = username.strip()
+    email = email.strip()
+    password = password.strip()
     errors = []
     if not username:
         errors.append("Username cannot be empty")
