@@ -1,14 +1,23 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session, escape
 from models.user import User
 from werkzeug.security import check_password_hash
+from flask_login import LoginManager, login_user, current_user, logout_user
+from app import app
+
+login_manager = LoginManager()
+login_manager.init_app(app)
 
 sessions_blueprint = Blueprint('sessions',
                             __name__,
                             template_folder='templates')
 
+@login_manager.user_loader
+def load_user(user_id):
+    return User.get_by_id(user_id)
+
 @sessions_blueprint.route('/new', methods=['GET'])
 def new():
-    if 'username' in session:
+    if current_user.is_authenticated:
         flash("You are already logged in")
         return redirect(url_for('home'))
     else:
@@ -24,7 +33,7 @@ def create():
 
     if user:
         if check_password_hash(user.password, password):
-            session["username"] = user.username
+            login_user(user)
             flash("Login succesful")
             return redirect(url_for('home'))
         else:
@@ -36,7 +45,7 @@ def create():
 
 @sessions_blueprint.route('/logout')
 def logout():
-    session.pop('username', None)
+    logout_user()
     flash("Succesfully logged out")
     return redirect(url_for('home'))
 

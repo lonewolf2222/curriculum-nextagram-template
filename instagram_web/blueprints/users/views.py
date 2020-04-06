@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from models.user import User
 from werkzeug.security import generate_password_hash
 import re
+from flask_login import LoginManager, login_user, current_user, logout_user
 
 users_blueprint = Blueprint('users',
                             __name__,
@@ -11,7 +12,6 @@ users_blueprint = Blueprint('users',
 @users_blueprint.route('/new', methods=['GET'])
 def new():
     return render_template('users/new.html')
-
 
 @users_blueprint.route('/', methods=['POST'])
 def create():
@@ -47,7 +47,7 @@ def create():
         hashed_password = generate_password_hash(password)
         user = User(username = username, password = hashed_password, email = email)
         if user.save():
-            session['username'] = user.username
+            login_user(user)
             flash("Your account has been created")
             return redirect(url_for('home'))
         else:
