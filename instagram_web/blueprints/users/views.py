@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from models.user import User
 from werkzeug.security import generate_password_hash
 import re
@@ -45,6 +45,7 @@ def create():
         hashed_password = generate_password_hash(password)
         user = User(username = username, password = hashed_password, email = email)
         if user.save():
+            session['username'] = user.username
             flash("Your account has been created")
             return redirect(url_for('home'))
         else:
