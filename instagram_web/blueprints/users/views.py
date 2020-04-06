@@ -18,32 +18,34 @@ def create():
     username = request.form.get('username')
     password = request.form.get('password')
     email = request.form.get('email')
+    errors = []
     if not username:
-        flash("Username cannot be empty")
-        return redirect(url_for('users.new'))
+        errors.append("Username cannot be empty")
     if not email:
-        flash("Email cannot be empty")
-        return redirect(url_for('users.new'))
+        errors.append("Email cannot be empty")
+    if ' ' in username:
+        errors.append("Username must be one word")
     if len(password) < 6:
-        flash("Password must be at least 6 characters")
-        return redirect(url_for('users.new'))
+        errors.append("Password must be at least 6 characters")
     if re.search('[0-9]', password) is None:
-        flash("Password must have at least one number")
-        return redirect(url_for('users.new'))
+        errors.append("Password must have at least one number")
+    if re.search('[a-z]', password) is None:
+        errors.append("Password must have at least one lower case letter")
     if re.search('[A-Z]', password) is None:
-        flash("Password must have at least one capital letter")
-        return redirect(url_for('users.new'))
+        errors.append("Password must have at least one capital letter")
     if re.search('[^A-Za-z\s0-9]', password) is None:
-        flash("Password must have at least one special character")
-        return redirect(url_for('users.new'))
-
-    hashed_password = generate_password_hash(password)
-    user = User(username = username, password = hashed_password, email = email)
-    if user.save():
-        flash("Your account has been created")
-        return redirect(url_for('users.new'))
+        errors.append("Password must have at least one special character")
+    
+    if len(errors) != 0:
+        return render_template('users/new.html', errors=errors)
     else:
-        return render_template('users/new.html', errors=user.errors)
+        hashed_password = generate_password_hash(password)
+        user = User(username = username, password = hashed_password, email = email)
+        if user.save():
+            flash("Your account has been created")
+            return redirect(url_for('home'))
+        else:
+            return render_template('users/new.html', errors=user.errors)
 
 @users_blueprint.route('/<username>', methods=["GET"])
 def show(username):
