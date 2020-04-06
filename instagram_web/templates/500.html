@@ -1,0 +1,7 @@
+{% extends "_layout.html" %}
+{% block title %}Internal Server Error{% endblock %}
+{% block content %}
+  <h1>Internal Server Error</h1>
+  <p>A Server Error Has Occurred </p>
+  <a href="{{ url_for('home') }}">Go Back To Home Page</a>
+{% endblock %}

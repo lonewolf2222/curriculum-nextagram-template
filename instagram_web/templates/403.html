@@ -1,0 +1,7 @@
+{% extends "_layout.html" %}
+{% block title %}Unauthorized Access{% endblock %}
+{% block content %}
+  <h1>Unauthorized Access</h1>
+  <p>You are not authorized to access this page </p>
+  <a href="{{ url_for('home') }}">Go Back To Home Page</a>
+{% endblock %}
