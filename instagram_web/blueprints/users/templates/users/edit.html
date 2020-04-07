@@ -15,4 +15,13 @@
     </div>
   <button type="submit" class="btn btn-primary">Submit</button>
   </form>
+
+  <form action="{{ url_for('users.upload', id=current_user.id ) }}" enctype="multipart/form-data" method="POST">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token()}}"/>
+    <label for="profile_image">Upload Your Profile Image</label>
+        <br></br>
+        <input type="file" name="profile_image">
+        <br></br>
+        <button type="submit">Upload</button>
+    </form>
 {% endblock %}

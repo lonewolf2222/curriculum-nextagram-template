@@ -3,11 +3,17 @@ from models.user import User
 from werkzeug.security import generate_password_hash, check_password_hash
 import re
 from flask_login import LoginManager, login_user, current_user, logout_user, login_required
+from werkzeug.utils import secure_filename
+from instagram_web.util.helpers import upload_file_to_s3
 
 users_blueprint = Blueprint('users',
                             __name__,
                             template_folder='templates')
 
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @users_blueprint.route('/new', methods=['GET'])
 def new():
@@ -71,7 +77,9 @@ def index():
 def edit(id):
     if str(current_user.id) == id:
         return render_template('users/edit.html')
-    return(current_user.id)
+    else:
+        flash("You can only update your own details")
+        return redirect(url_for('home'))
 
 
 @users_blueprint.route('/<id>', methods=['POST'])
@@ -81,17 +89,15 @@ def update(id):
     username = username.strip()
     email = email.strip()
     errors = []
-    if not username:
-        errors.append("Username cannot be empty")
-    if not email:
-        errors.append("Email cannot be empty")
+    if not username and not email:
+        errors.append("Nothing to update")
     if ' ' in username:
         errors.append("Username must be one word")
 
     if len(errors) != 0:
         for e in errors:
             flash(e)
-        return redirect(url_for('users.new'))
+        return redirect(url_for('users.edit', id=id))
     else:
         try:
             query = User.update(username=username, email=email).where(User.id == id)
@@ -107,7 +113,9 @@ def update(id):
 def passwd(id):
     if str(current_user.id) == id:
         return render_template('users/passwd.html')
-    return(current_user.id)
+    else:
+        flash("You can only change your own password")
+        return redirect(url_for('home'))
 
 @users_blueprint.route('/passwd_update/<id>', methods=['POST'])
 def passwd_update(id):
@@ -146,3 +154,16 @@ def passwd_update(id):
             flash("An error has occurred")
             return redirect(url_for('users.passwd', id=id))
 
+@users_blueprint.route('/upload/<id>', methods=['POST'])
+@login_required
+def upload(id):
+    file = request.files["profile_image"]
+    if file.filename == "":
+        flash("Please select a file")
+        return redirect(url_for('users.edit', id=id))
+
+    if file and allowed_file(file.filename):
+        file.filename = secure_filename(file.filename)
+        image = upload_file_to_s3(file)
+        flash(f"{image}")
+    return redirect(url_for('home'))

@@ -1,6 +1,6 @@
 import os
 import config
-from flask import Flask
+from flask import Flask, url_for
 from models.base_model import db
 from flask_wtf.csrf import CSRFProtect
 
