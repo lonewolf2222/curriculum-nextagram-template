@@ -13,7 +13,7 @@ sessions_blueprint = Blueprint('sessions',
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User.get_by_id(user_id)
+    return User.get_or_none(User.id == user_id)
 
 @sessions_blueprint.route('/new', methods=['GET'])
 def new():

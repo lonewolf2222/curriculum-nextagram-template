@@ -1,8 +1,8 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from models.user import User
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 import re
-from flask_login import LoginManager, login_user, current_user, logout_user
+from flask_login import LoginManager, login_user, current_user, logout_user, login_required
 
 users_blueprint = Blueprint('users',
                             __name__,
@@ -67,10 +67,82 @@ def index():
 
 
 @users_blueprint.route('/<id>/edit', methods=['GET'])
+@login_required
 def edit(id):
-    pass
+    if str(current_user.id) == id:
+        return render_template('users/edit.html')
+    return(current_user.id)
 
 
 @users_blueprint.route('/<id>', methods=['POST'])
 def update(id):
-    pass
+    username = request.form.get('username')
+    email = request.form.get('email')
+    username = username.strip()
+    email = email.strip()
+    errors = []
+    if not username:
+        errors.append("Username cannot be empty")
+    if not email:
+        errors.append("Email cannot be empty")
+    if ' ' in username:
+        errors.append("Username must be one word")
+
+    if len(errors) != 0:
+        for e in errors:
+            flash(e)
+        return redirect(url_for('users.new'))
+    else:
+        try:
+            query = User.update(username=username, email=email).where(User.id == id)
+            query.execute()
+            flash("Details updated")
+            return redirect(url_for('users.edit', id=id))
+        except:
+            flash("An error has occurred")
+            return redirect(url_for('users.edit', id=id))
+
+@users_blueprint.route('/<id>/passwd', methods=['GET'])
+@login_required
+def passwd(id):
+    if str(current_user.id) == id:
+        return render_template('users/passwd.html')
+    return(current_user.id)
+
+@users_blueprint.route('/passwd_update/<id>', methods=['POST'])
+def passwd_update(id):
+    oldpassword = request.form.get('oldpassword')
+    newpassword = request.form.get('newpassword')
+    oldpassword = oldpassword.strip()
+    newpassword = newpassword.strip()
+    user = User.get_or_none(User.id == id)
+
+    errors = []
+    if not check_password_hash(user.password, oldpassword):
+        errors.append("Old password incorrect")
+    if len(newpassword) < 6:
+        errors.append("New Password must be at least 6 characters")
+    if re.search('[0-9]', newpassword) is None:
+        errors.append("New Password must have at least one number")
+    if re.search('[a-z]', newpassword) is None:
+        errors.append("New Password must have at least one lower case letter")
+    if re.search('[A-Z]', newpassword) is None:
+        errors.append("New Password must have at least one capital letter")
+    if re.search('[^A-Za-z\s0-9]', newpassword) is None:
+        errors.append("New Password must have at least one special character")
+
+    if len(errors) != 0:
+        for e in errors:
+            flash(e)
+        return redirect(url_for('users.passwd', id=id))
+    else:
+        hashed_password = generate_password_hash(newpassword)
+        try:
+            query = User.update(password=hashed_password).where(User.id == id)
+            query.execute()
+            flash("Password updated")
+            return redirect(url_for('users.passwd', id=id))
+        except:
+            flash("An error has occurred")
+            return redirect(url_for('users.passwd', id=id))
+
