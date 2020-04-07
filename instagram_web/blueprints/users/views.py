@@ -4,16 +4,11 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import re
 from flask_login import LoginManager, login_user, current_user, logout_user, login_required
 from werkzeug.utils import secure_filename
-from instagram_web.util.helpers import upload_file_to_s3
+from instagram_web.util.helpers import upload_file_to_s3, allowed_file
 
 users_blueprint = Blueprint('users',
                             __name__,
                             template_folder='templates')
-
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @users_blueprint.route('/new', methods=['GET'])
 def new():
@@ -111,7 +106,7 @@ def update(id):
 @users_blueprint.route('/<id>/passwd', methods=['GET'])
 @login_required
 def passwd(id):
-    if str(current_user.id) == id:
+    if current_user.id == id:
         return render_template('users/passwd.html')
     else:
         flash("You can only change your own password")
@@ -155,8 +150,12 @@ def passwd_update(id):
             return redirect(url_for('users.passwd', id=id))
 
 @users_blueprint.route('/upload/<id>', methods=['POST'])
-@login_required
 def upload(id):
+    # user = User.get_or_none(User.id == id)
+    if "profile_image" not in request.files:
+        flash("You must upload an image file")
+        return redirect(url_for('users.edit', id=id))
+
     file = request.files["profile_image"]
     if file.filename == "":
         flash("Please select a file")
@@ -165,5 +164,14 @@ def upload(id):
     if file and allowed_file(file.filename):
         file.filename = secure_filename(file.filename)
         image = upload_file_to_s3(file)
-        flash(f"{image}")
-    return redirect(url_for('home'))
+        try:
+            query = User.update(image_path=file.filename).where(User.id==id)
+            query.execute()
+            flash("Your profile picture is set!")
+            return redirect(url_for('users.edit', id=id))
+        except:
+            flash("An error has occured. Please try again")
+            return redirect(url_for('users.edit', id=id))
+    else:
+        flash("Unsupported file type")
+        return redirect(url_for('users.edit', id=id))

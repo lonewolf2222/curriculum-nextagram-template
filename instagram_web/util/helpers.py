@@ -1,6 +1,11 @@
 import boto3, botocore
 from config import Config
 
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 s3 = boto3.client(
    "s3",
    aws_access_key_id=Config.S3_KEY,
