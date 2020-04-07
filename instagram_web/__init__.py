@@ -22,6 +22,9 @@ def page_not_found(e):
 def page_forbidden(e):
     return render_template('403.html'), 403
 
+@app.errorhandler(401)
+def page_not_authorized(e):
+    return render_template('401.html'), 401
 
 @app.route("/")
 def home():

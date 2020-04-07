@@ -1,0 +1,7 @@
+{% extends "_layout.html" %}
+{% block title %}Unauthorized Access{% endblock %}
+{% block content %}
+  <h1>Unauthorized Access</h1>
+  <p>You must login first to access this page </p>
+  <a href="{{ url_for('sessions.new') }}">Go To Login Page</a>
+{% endblock %}
