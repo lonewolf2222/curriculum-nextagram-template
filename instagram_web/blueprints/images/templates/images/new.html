@@ -1,0 +1,19 @@
+{%extends "_layout.html"%} 
+{% block content %}
+
+<h1>Images Upload</h1>
+
+<form action="{{ url_for('images.upload', id=current_user.id ) }}" enctype="multipart/form-data" method="POST">
+<input type="hidden" name="csrf_token" value="{{ csrf_token()}}"/>
+    <div class="form-group">
+        <label for="user_image">Upload Your Photos</label>
+        <br><br>
+        <input type="file" name="user_image">
+    </div>
+    <div class="form-group">
+        <label for="desc">Enter Description For Your Photo </label>
+        <input type="text" name="desc" class="form-control" />
+    </div>
+<button type="submit" class="btn btn-primary">Upload</button>
+</form>
+{% endblock %}
