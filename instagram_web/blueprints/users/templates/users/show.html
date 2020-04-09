@@ -3,9 +3,12 @@
 
 <h2> Profile Page Of {{user.username}}</h2>
 <img src="{{user.profile_image_url}}" style="width:100px; height:100px">
-
+{% if user.private == True and current_user.username != user.username %}
+<h3> Private Profile Page</h3>
+{% else %}
 <div style="flex: 1; display: flex ; justify-content:space-around; flex-wrap: wrap; padding-left:30; padding-top:30"> 
     {% for img in user.images %}
     <img src="{{img.user_images_url}}" style="width:200px; height:200px" >
     {% endfor %}
+{% endif %}
 {% endblock %}

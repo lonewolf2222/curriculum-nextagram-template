@@ -85,29 +85,31 @@ def edit(id):
 
 @users_blueprint.route('/<id>', methods=['POST'])
 def update(id):
+    # user = User.get_or_none(User.id == id)
     username = request.form.get('username')
     email = request.form.get('email')
     username = username.strip()
     email = email.strip()
-    errors = []
-    if not username and not email:
-        errors.append("Nothing to update")
-    if ' ' in username:
-        errors.append("Username must be one word")
-
-    if len(errors) != 0:
-        for e in errors:
-            flash(e)
+    status = request.form.get('status')
+    if not username or not email:
+        flash("Username and email cannot be empty")
         return redirect(url_for('users.edit', id=id))
+    if ' ' in username:
+        flash("Username must be one word")
+        return redirect(url_for('users.edit', id=id))
+    
+    if status == None:
+        private = False
     else:
-        try:
-            query = User.update(username=username, email=email).where(User.id == id)
-            query.execute()
-            flash("Details updated")
-            return redirect(url_for('users.edit', id=id))
-        except:
-            flash("An error has occurred")
-            return redirect(url_for('users.edit', id=id))
+        private = True
+    try:
+        query = User.update(username=username, email=email, private=private).where(User.id == id)
+        query.execute()
+        flash("Details updated")
+        return redirect(url_for('users.edit', id=id))
+    except:
+        flash("An error has occurred")
+        return redirect(url_for('users.edit', id=id))
 
 @users_blueprint.route('/<int:id>/passwd', methods=['GET'])
 @login_required
