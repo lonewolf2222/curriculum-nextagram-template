@@ -1,0 +1,15 @@
+{%extends "_layout.html"%} 
+{% block content %}
+
+<h2> Welcome to Nextagram</h2>
+
+<div style="flex: 1; display: flex ; justify-content:space-around; flex-wrap: wrap; padding-left:30; padding-top:30"></div>
+    {% for user in users_with_images %}
+    {% if user.images | length > 0 %}
+    <div><p>{{user.username}}</p></div>
+    {% for img in user.images %}
+    <img src="{{img.user_images_url}}" style="width:200px; height:200px" >
+    {% endfor %}
+    {% endif %}
+    {% endfor %}
+{% endblock %}

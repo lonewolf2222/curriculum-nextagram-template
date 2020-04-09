@@ -5,7 +5,7 @@
 <img src="{{user.profile_image_url}}" style="width:100px; height:100px">
 
 <div style="flex: 1; display: flex ; justify-content:space-around; flex-wrap: wrap; padding-left:30; padding-top:30"> 
-    {% for img in photos %}
+    {% for img in user.images %}
     <img src="{{img.user_images_url}}" style="width:200px; height:200px" >
     {% endfor %}
 {% endblock %}

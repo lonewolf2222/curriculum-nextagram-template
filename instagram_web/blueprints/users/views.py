@@ -1,11 +1,12 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from models.user import User
+from models.image import Image
 from werkzeug.security import generate_password_hash, check_password_hash
 import re
+from peewee import prefetch
 from flask_login import LoginManager, login_user, current_user, logout_user, login_required
 from werkzeug.utils import secure_filename
 from instagram_web.util.helpers import upload_file_to_s3, allowed_file, password_checker
-
 
 users_blueprint = Blueprint('users',
                             __name__,
@@ -57,18 +58,21 @@ def create():
 @users_blueprint.route('/<username>', methods=["GET"])
 @login_required
 def show(username):
-    user = User.get_or_none(User.username == username)
 
+    user = User.get_or_none(User.username == username)
     if not user:
-        flash(f"{username} does not exist!")
+        flash(f"User {username} does not exist!")
         return redirect(url_for('home'))
     else:
-        photos = User.get_by_id(user.id).images
-        return render_template('users/show.html', photos = photos, user=user)
+        return render_template('users/show.html', user=user)
 
 @users_blueprint.route('/', methods=["GET"])
 def index():
-    pass
+    users = User.select()
+    images = Image.select()
+    users_with_images = prefetch(users, images)
+    # users_with_images = User.select().join(Image).order_by(Image.created_at.desc()).prefetch(Image)
+    return render_template('users/index.html', users_with_images = users_with_images)
 
 @users_blueprint.route('/<int:id>/edit', methods=['GET'])
 @login_required
@@ -78,7 +82,6 @@ def edit(id):
     else:
         flash("You can only update your own details")
         return redirect(url_for('home'))
-
 
 @users_blueprint.route('/<id>', methods=['POST'])
 def update(id):
@@ -168,7 +171,7 @@ def upload(id):
                 flash("An error has occured. Please try again")
                 return redirect(url_for('users.edit', id=id))
         else: 
-            flash("An error has occured. Please try again")
+            flash("Network error has occured. Please try again")
             return redirect(url_for('users.edit', id=id))
     else:
         flash("Unsupported file type")
