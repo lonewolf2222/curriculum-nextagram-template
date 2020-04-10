@@ -44,3 +44,4 @@ def upload_file_to_s3(file, acl="public-read"):
         return e
     
     return "{}{}".format(Config.S3_LOCATION, file.filename)
+
