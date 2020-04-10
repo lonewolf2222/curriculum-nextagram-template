@@ -3,6 +3,7 @@ from models.user import User
 from werkzeug.security import check_password_hash
 from flask_login import LoginManager, login_user, current_user, logout_user
 from app import app
+from instagram_web.util.google_oauth import oauth
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -48,6 +49,24 @@ def logout():
     logout_user()
     flash("Succesfully logged out")
     return redirect(url_for('home'))
+
+@sessions_blueprint.route('/google_login')
+def google_login():
+    redirect_uri = url_for('sessions.authorize', _external = True)
+    return oauth.google.authorize_redirect(redirect_uri)
+
+@sessions_blueprint.route('/authorize/google')
+def authorize():
+    oauth.google.authorize_access_token()
+    email = oauth.google.get('https://www.googleapis.com/oauth2/v2/userinfo').json()['email']
+    user = User.get_or_none(User.email == email)
+    if user:
+        login_user(user)
+        flash("Login successful")
+        return redirect(url_for('home'))
+    else:
+        flash("You do not have an account. Please sign up")
+        return redirect(url_for('users.new'))
 
 
 

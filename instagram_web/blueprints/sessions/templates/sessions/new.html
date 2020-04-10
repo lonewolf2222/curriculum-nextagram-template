@@ -6,6 +6,7 @@
 
 <h1>User Login</h1>
 
+<a href="{{ url_for('sessions.google_login') }}">Login Using Google</a>
 <form action="{{ url_for('sessions.create') }}" method="POST">
     <input type="hidden" name="csrf_token" value="{{ csrf_token()}}"/>
     <div class="form-group">

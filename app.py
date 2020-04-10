@@ -1,8 +1,10 @@
 import os
 import config
+from config import Config
 from flask import Flask, url_for
 from models.base_model import db
 from flask_wtf.csrf import CSRFProtect
+
 
 web_dir = os.path.join(os.path.dirname(
     os.path.abspath(__file__)), 'instagram_web')
@@ -14,7 +16,6 @@ if os.getenv('FLASK_ENV') == 'production':
     app.config.from_object("config.ProductionConfig")
 else:
     app.config.from_object("config.DevelopmentConfig")
-
 
 @app.before_request
 def before_request():
