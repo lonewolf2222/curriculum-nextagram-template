@@ -37,8 +37,8 @@ def create(image_id):
         receiver = User.get_or_none(User.id == image.user_id)
         receiver_email = receiver.email
         send_email(sender, receiver_email, amount)
-        flash("Thank you for your donation")
+        flash(u"Thank you for your donation", 'success')
         return redirect(url_for('users.index'))
     else:
-        flash("An error has occurred")
+        flash(u"An error has occurred", 'warning')
         return redirect(url_for('users.index'))

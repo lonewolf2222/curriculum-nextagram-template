@@ -19,7 +19,7 @@ def load_user(user_id):
 @sessions_blueprint.route('/new', methods=['GET'])
 def new():
     if current_user.is_authenticated:
-        flash("You are already logged in")
+        flash(u"You are already logged in", 'info')
         return redirect(url_for('home'))
     else:
         return render_template('sessions/new.html')
@@ -35,19 +35,19 @@ def create():
     if user:
         if check_password_hash(user.password, password):
             login_user(user)
-            flash("Login succesful")
+            flash(u"Login succesful", 'success')
             return redirect(url_for('home'))
         else:
-            flash("Invalid password")
+            flash(u"Invalid password", 'warning')
             return redirect(url_for('sessions.new'))
     else:
-        flash("Username does not exist!")
+        flash(u"Username does not exist!", 'warning')
         return redirect(url_for('sessions.new'))
 
 @sessions_blueprint.route('/logout')
 def logout():
     logout_user()
-    flash("Succesfully logged out")
+    flash(u"Succesfully logged out", 'success')
     return redirect(url_for('home'))
 
 @sessions_blueprint.route('/google_login')
@@ -62,10 +62,10 @@ def authorize():
     user = User.get_or_none(User.email == email)
     if user:
         login_user(user)
-        flash("Login successful")
+        flash(u"Login successful", 'success')
         return redirect(url_for('home'))
     else:
-        flash("You do not have an account. Please sign up")
+        flash(u"You do not have an account. Please sign up", 'info')
         return redirect(url_for('users.new'))
 
 

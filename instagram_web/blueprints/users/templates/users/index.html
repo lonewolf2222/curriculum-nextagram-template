@@ -1,15 +1,31 @@
 {%extends "_layout.html"%} 
 {% block content %}
 
-<h2> Welcome to Nextagram</h2>
-
-<div style="flex: 1; display: flex ; justify-content:space-around; flex-wrap: wrap; padding-left:30; padding-top:30"></div>
-    {% for user in users_with_images %}
-    {% if user.images | length > 0 and user.private == False %}
-    <div><p>{{user.username}}</p></div>
-    {% for img in user.images %}
-    <img src="{{img.user_images_url}}" style="width:200px; height:200px" >
-    {% endfor %}
-    {% endif %}
-    {% endfor %}
+<h2 style="text-align:center"> Welcome to Nextagram</h2>
+{% for user in users_with_images %}
+{% if user.images | length > 0 and user.private == False %}
+<div class="row pt-3 pb-3">
+    <div class="col-md-2 mb-5">
+        <div class="card" style="border: none;">
+            <div class="card-body">
+                <img class="card-img-top" src="{{user.profile_image_url}}">
+                <h5 class="card-title" style="text-justify: center;">{{user.username}}</h5>
+                <a href="/users/{{user.username}}" class="btn btn-primary"> See More</a>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="row">
+            {% for img in user.images %}
+                {% if loop.index <=6 %}
+                <div class="col-md-4 mb-3">
+                    <img src="{{img.user_images_url}}" class="img-fluid">
+                </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endfor %}
 {% endblock %}

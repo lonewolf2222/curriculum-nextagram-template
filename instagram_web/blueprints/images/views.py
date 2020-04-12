@@ -20,12 +20,12 @@ def upload(id):
     # user = User.get_or_none(User.id == id)
     desc = request.form.get("desc")
     if "user_image" not in request.files:
-        flash("You must upload an image file")
+        flash(u"You must upload an image file", 'warning')
         return redirect(url_for('images.new'))
 
     file = request.files["user_image"]
     if file.filename == "":
-        flash("Please select a file")
+        flash(u"Please select a file", 'warning')
         return redirect(url_for('images.new'))
 
     if file and allowed_file(file.filename):
@@ -35,14 +35,14 @@ def upload(id):
             try:
                 img = Image(image_path=file.filename, desc=desc, user_id=id)
                 img.save()
-                flash("Your Photo is uploaded!")
+                flash(u"Your Photo is uploaded!", 'success')
                 return redirect(url_for('home'))
             except:
-                flash("An error has occured. Please try again")
+                flash(u"An error has occured. Please try again", 'warning')
                 return redirect(url_for('images.new'))
         else: 
-            flash("Network error. Please try again")
+            flash(u"Network error. Please try again", 'warning')
             return redirect(url_for('images.new'))
     else:
-        flash("Unsupported file type")
+        flash(u"Unsupported file type", 'danger')
         return redirect(url_for('images.new'))

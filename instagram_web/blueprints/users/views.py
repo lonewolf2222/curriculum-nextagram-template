@@ -34,25 +34,25 @@ def create():
 
     if len(errors) != 0:
         for e in errors:
-            flash(e)
+            flash(e, 'warning')
         return redirect(url_for('users.new'))
     else:
         result = password_checker(password)
         if len(result) != 0:
             for e in result:
-                flash(e)
+                flash(e, 'warning')
             return redirect(url_for('users.new'))
         else:
             hashed_password = generate_password_hash(password)
             user = User(username = username, password = hashed_password, email = email)
             if user.save():
                 login_user(user)
-                flash("Your account has been created")
+                flash(u"Your account has been created", 'success')
                 return redirect(url_for('home'))
             else:
                 errors = user.errors
                 for e in errors:
-                    flash(e)
+                    flash(e, 'warning')
                 return redirect(url_for('users.new'))
 
 @users_blueprint.route('/<username>', methods=["GET"])
@@ -61,7 +61,7 @@ def show(username):
 
     user = User.get_or_none(User.username == username)
     if not user:
-        flash(f"User {username} does not exist!")
+        flash(u"User does not exist!",'warning')
         return redirect(url_for('home'))
     else:
         return render_template('users/show.html', user=user)
@@ -80,7 +80,7 @@ def edit(id):
     if (current_user.id) == id:
         return render_template('users/edit.html')
     else:
-        flash("You can only update your own details")
+        flash(u"You can only update your own details!", 'danger')
         return redirect(url_for('home'))
 
 @users_blueprint.route('/<id>', methods=['POST'])
@@ -92,10 +92,10 @@ def update(id):
     email = email.strip()
     status = request.form.get('status')
     if not username or not email:
-        flash("Username and email cannot be empty")
+        flash(u"Username and email cannot be empty", 'warning')
         return redirect(url_for('users.edit', id=id))
     if ' ' in username:
-        flash("Username must be one word")
+        flash(u"Username must be one word", 'warning')
         return redirect(url_for('users.edit', id=id))
     
     if status == None:
@@ -105,10 +105,10 @@ def update(id):
     try:
         query = User.update(username=username, email=email, private=private).where(User.id == id)
         query.execute()
-        flash("Details updated")
+        flash(u"Details updated", 'info')
         return redirect(url_for('users.edit', id=id))
     except:
-        flash("An error has occurred")
+        flash(u"An error has occurred", 'warning')
         return redirect(url_for('users.edit', id=id))
 
 @users_blueprint.route('/<int:id>/passwd', methods=['GET'])
@@ -117,7 +117,7 @@ def passwd(id):
     if (current_user.id) == id:
         return render_template('users/passwd.html')
     else:
-        flash("You can only change your own password")
+        flash(u"You can only change your own password", 'danger')
         return redirect(url_for('home'))
 
 @users_blueprint.route('/passwd_update/<id>', methods=['POST'])
@@ -129,7 +129,7 @@ def passwd_update(id):
     user = User.get_or_none(User.id == id)
 
     if not check_password_hash(user.password, oldpassword):
-        flash("Current password incorrect")
+        flash(u"Current password incorrect", 'warning')
         return redirect(url_for('users.passwd', id=id))
     else:
         result = password_checker(newpassword)
@@ -142,22 +142,22 @@ def passwd_update(id):
             try:
                 query = User.update(password=hashed_password).where(User.id == id)
                 query.execute()
-                flash("Password updated")
+                flash(u"Password updated", 'info')
                 return redirect(url_for('users.passwd', id=id))
             except:
-                flash("An error has occurred")
+                flash(u"An error has occurred", 'warning')
                 return redirect(url_for('users.passwd', id=id))
 
 @users_blueprint.route('/upload/<id>', methods=['POST'])
 def upload(id):
     # user = User.get_or_none(User.id == id)
     if "profile_image" not in request.files:
-        flash("You must upload an image file")
+        flash(u"You must upload an image file", 'warning')
         return redirect(url_for('users.edit', id=id))
 
     file = request.files["profile_image"]
     if file.filename == "":
-        flash("Please select a file")
+        flash(u"Please select a file", 'warning')
         return redirect(url_for('users.edit', id=id))
 
     if file and allowed_file(file.filename):
@@ -167,14 +167,14 @@ def upload(id):
             try:
                 query = User.update(image_path=file.filename).where(User.id==id)
                 query.execute()
-                flash("Profile picture updated!")
+                flash(u"Profile picture updated!", 'success')
                 return redirect(url_for('users.edit', id=id))
             except:
-                flash("An error has occured. Please try again")
+                flash(u"An error has occured. Please try again", 'warning')
                 return redirect(url_for('users.edit', id=id))
         else: 
-            flash("Network error has occured. Please try again")
+            flash(u"Network error has occured. Please try again", 'warning')
             return redirect(url_for('users.edit', id=id))
     else:
-        flash("Unsupported file type")
+        flash(u"Unsupported file type", 'danger')
         return redirect(url_for('users.edit', id=id))
