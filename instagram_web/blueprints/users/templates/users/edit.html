@@ -1,15 +1,16 @@
 {%extends "_layout.html"%} 
 {% block content %}
 
-<h1>Update User Details</h1>
-<!-- <p> {{current_user.username}}</p> -->
+<div class="container-fluid">
+<h2 style="text-align: center;">Profile Update</h2>
+
 <img src="{{current_user.profile_image_url}}" class="card-img-top;" style="border-radius: 20px; width:100px; height:100px;">
 <form action="{{ url_for('users.upload', id=current_user.id ) }}" enctype="multipart/form-data" method="POST">
   <input type="hidden" name="csrf_token" value="{{ csrf_token()}}"/>
   <label for="profile_image">Update Profile Picture</label>
       <br>
       <input type="file" name="profile_image">
-      <br><br>
+      <br>
       <button type="submit" class="btn btn-primary">Upload</button>
   </form>
   <br>
@@ -24,7 +25,7 @@
         <input type='text' name='email' value='{{current_user.email}}' class="form-control" />
     </div>
     <br>
-    <p> Hide Profile? [Tick To Hide, Untick To Make Public]</p>
+    <p> Hide Photo Collection? [Tick To Hide, Untick To Make Public]</p>
     {% if current_user.private == False %}
     <div>
         <label ><input type="checkbox" name="status" value="" /> Yes </label>    
@@ -36,5 +37,5 @@
     {% endif %}
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>
-    
+</div> 
 {% endblock %}

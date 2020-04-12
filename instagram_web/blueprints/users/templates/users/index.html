@@ -18,8 +18,8 @@
         <div class="row">
             {% for img in user.images %}
                 {% if loop.index <=6 %}
-                <div class="col-md-4 mb-3">
-                    <img src="{{img.user_images_url}}" class="img-fluid">
+                <div class="col-md-4 mb-2">
+                    <img src="{{img.user_images_url}}" class="img-fluid" style="width:100%; height:250px; object-fit:cover">
                 </div>
                 {% endif %}
             {% endfor %}

@@ -56,7 +56,7 @@ def create():
                 return redirect(url_for('users.new'))
 
 @users_blueprint.route('/<username>', methods=["GET"])
-@login_required
+# @login_required
 def show(username):
 
     user = User.get_or_none(User.username == username)
@@ -105,7 +105,7 @@ def update(id):
     try:
         query = User.update(username=username, email=email, private=private).where(User.id == id)
         query.execute()
-        flash(u"Details updated", 'info')
+        flash(u"Profile updated", 'info')
         return redirect(url_for('users.edit', id=id))
     except:
         flash(u"An error has occurred", 'warning')
@@ -178,3 +178,8 @@ def upload(id):
     else:
         flash(u"Unsupported file type", 'danger')
         return redirect(url_for('users.edit', id=id))
+
+@users_blueprint.route('/search', methods=['GET'])
+def search():
+    search_username = request.args.get("username")
+    return redirect(url_for('users.show', username=search_username))

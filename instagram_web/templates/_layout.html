@@ -26,14 +26,19 @@
   <body>
   <div class="container-fluid" style="padding-left:0;padding-right: 0;">
   {% block navbar %}
-  <nav class="navbar navbar-light" style="background-color: #e3f2fd;margin-bottom: 20px;" >
-      <div class="navbar-header">
+  <nav class="navbar navbar-light mt-auto" style="background-color: #e3f2fd;margin-bottom: 20px;" >
+      <div class="navbar-header" style="display: flex;">
         <a class="nav-item mx-2" href="{{url_for('home')}}">
           <img src="/static/images/favicon.png" alt="" style="width:30px; height:30px"/>
         </a>
         <a class="nav-item mx-2" href="{{url_for('home')}}"> Nextagram </a>
+        <form class="form-inline mx-2" action="{{url_for('users.search', username=username)}}">
+          <input class="form-control mr-sm-2" type="search" name="username" placeholder="Type Username" aria-label="Search">
+          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </form>
       </div>
-      <div class="navbar-right" >
+        
+      <div class="navbar-right">
         {% if not current_user.is_authenticated %}
         <a class="nav-item mx-2" href="{{url_for('sessions.new')}}">Login</a>
         <a class="nav-item mx-2" href="{{url_for('users.new')}}"> Sign Up</a>
@@ -41,6 +46,7 @@
         <a class="nav-item mx-2" href="{{url_for('users.edit', id=current_user.id)}}">Update Profile</a>
         <a class="nav-item mx-2" href="{{url_for('users.passwd', id=current_user.id)}}">Change Password</a>
         <a class="nav-item mx-2" href="{{url_for('images.new')}}">Upload Photos</a>
+        <a class="nav-item mx-2" href="/users/{{current_user.username}}">Manage Photos</a>
         <a class="nav-item mx-2" href="{{url_for('sessions.logout')}}">Logout</a>
         {% endif %}
       </div>
