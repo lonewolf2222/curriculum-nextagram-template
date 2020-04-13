@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from models.user import User
 from models.image import Image
+from models.follow import IdolFan
 from werkzeug.security import generate_password_hash, check_password_hash
 import re
 from peewee import prefetch
@@ -64,7 +65,13 @@ def show(username):
         flash(u"User does not exist!",'warning')
         return redirect(url_for('home'))
     else:
-        return render_template('users/show.html', user=user)
+        idol = IdolFan.get_or_none((IdolFan.idol_id == user.id) & (IdolFan.fan_id == current_user.id))
+        if idol and idol.approved:
+            status = "approved"
+            return render_template('users/show.html', user=user, status=status)
+        else:
+            status = "notapproved"
+            return render_template('users/show.html', user=user, status=status)
 
 @users_blueprint.route('/', methods=["GET"])
 def index():

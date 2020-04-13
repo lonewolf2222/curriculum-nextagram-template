@@ -1,7 +1,7 @@
 from models.base_model import BaseModel
 import peewee as pw
 from flask_login import UserMixin
-from playhouse.hybrid import hybrid_property
+from playhouse.hybrid import hybrid_property, hybrid_method
 AWS_S3_DOMAIN = "http://lonewolf2222-storage.s3.amazonaws.com/"
 
 class User(BaseModel, UserMixin):
@@ -23,4 +23,15 @@ class User(BaseModel, UserMixin):
             self.errors.append('Username already exists!')
         if duplicate_email:
             self.errors.append('Email already exists!')
+    
+    def is_private(self):
+        return True if self.private else False
+
+    def is_following(self, idol_id):
+        from models.follow import IdolFan
+        if IdolFan.get_or_none((IdolFan.idol_id == idol_id) & (IdolFan.fan_id == self.id)):
+            return True
+        else:
+            return False
+
 

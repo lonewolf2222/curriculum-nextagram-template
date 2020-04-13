@@ -1,0 +1,24 @@
+{% extends "_layout.html" %}
+
+{% block content %}
+<div class="container-fluid">
+
+<h2 style="text-align: center;"> Requested to follow you</h2>
+<div class="row">
+    {% for request in requests %}
+    {% if not request.approved %}
+    <div class="col">
+        <div>
+            <p> {{request.fan.username}}</p>
+            <img src="{{request.fan.profile_image_url}}" class="img-rounded" style="height:100px; width: 100px;">
+            <form action="{{url_for('follows.edit', fan_username =request.fan.username)}}" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                <button type="submit" class="btn btn-info">Approve</button>
+            </form>
+        </div>  
+    </div>
+    {% endif %}
+    {% endfor %}
+</div>   
+</div>
+{% endblock %}

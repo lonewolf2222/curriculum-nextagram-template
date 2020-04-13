@@ -1,0 +1,7 @@
+{% extends "_layout.html" %}
+{% block title %}Page Not Found{% endblock %}
+{% block content %}
+  <h1>Invalid Access</h1>
+  <p>You have performed an invalid operation! </p>
+  <a href="{{ url_for('home') }}">Go Back To Home Page</a>
+{% endblock %}

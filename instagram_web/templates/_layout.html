@@ -47,6 +47,7 @@
         <a class="nav-item mx-2" href="{{url_for('users.passwd', id=current_user.id)}}">Change Password</a>
         <a class="nav-item mx-2" href="{{url_for('images.new')}}">Upload Photos</a>
         <a class="nav-item mx-2" href="/users/{{current_user.username}}">Manage Photos</a>
+        <a class="nav-item mx-2" href="/follows/new">Approve Requests</a>
         <a class="nav-item mx-2" href="{{url_for('sessions.logout')}}">Logout</a>
         {% endif %}
       </div>
