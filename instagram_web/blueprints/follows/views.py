@@ -27,6 +27,10 @@ def edit(fan_username):
 
 @follows_blueprint.route('/<idol_id>', methods=['POST'])
 def create(idol_id):
+    if not current_user.image_path:
+        flash(u"Please set a profile image for yourself first", 'warning')
+        return redirect(url_for('users.edit', id=current_user.id))
+
     idol = User.get_or_none(User.id == idol_id)
     if current_user.id == idol.id:
         flash(u"You cannot follow yourself", 'warning')
