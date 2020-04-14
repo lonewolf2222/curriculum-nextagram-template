@@ -51,3 +51,15 @@ def upload(id):
     else:
         flash(u"Unsupported file type", 'danger')
         return redirect(url_for('images.new'))
+
+@images_blueprint.route('/delete/<image_id>', methods=['GET'])
+def delete(image_id):
+    image_remove = Image.get_or_none(Image.id == image_id)
+    try:
+        image_remove.delete_instance()
+        flash(u"Photo deleted", 'success')
+        return redirect(url_for('users.show', username=current_user.username))
+    except:
+        flash(u"An error has occured. Please try again", 'warning')
+        return redirect(url_for('users.show', username=current_user.username))
+
