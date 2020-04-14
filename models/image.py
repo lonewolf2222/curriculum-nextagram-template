@@ -2,7 +2,9 @@ from models.base_model import BaseModel
 from models.user import User
 import peewee as pw
 from playhouse.hybrid import hybrid_property
-AWS_S3_DOMAIN = "http://lonewolf2222-storage.s3.amazonaws.com/"
+import os
+
+AWS_S3_DOMAIN = os.environ.get("AWS_S3_DOMAIN")
 
 class Image(BaseModel):
     image_path = pw.CharField(null=True)

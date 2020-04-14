@@ -25,7 +25,10 @@ class User(BaseModel, UserMixin):
             self.errors.append('Email already exists!')
     
     def is_private(self):
-        return True if self.private else False
+        if self.private:
+            return True
+        else:
+            return False
 
     def is_following(self, idol_id):
         from models.follow import IdolFan
@@ -33,5 +36,22 @@ class User(BaseModel, UserMixin):
             return True
         else:
             return False
+
+    @hybrid_property
+    def fans(self):
+        from models.follow import IdolFan
+        return User.select().join(IdolFan, on=(User.id == IdolFan.fan_id)).where(IdolFan.idol_id == self.id).where(IdolFan.approved == True)
+    
+    @hybrid_property
+    def idols(self):
+        from models.follow import IdolFan
+        return User.select().join(IdolFan, on=(User.id == IdolFan.idol_id)).where(IdolFan.fan_id == self.id).where(IdolFan.approved == True)
+    
+    @hybrid_property
+    def image_feed(self):
+        from models.follow import IdolFan
+        from models.image import Image
+        return Image.select().join(IdolFan, on=(IdolFan.idol_id == Image.user_id)).where(IdolFan.fan_id == self.id).where(IdolFan.approved == True).order_by(Image.created_at.desc())
+
 
 
