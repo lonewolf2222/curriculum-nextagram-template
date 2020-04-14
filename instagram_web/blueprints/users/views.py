@@ -191,9 +191,10 @@ def search():
     search_username = request.args.get("username")
     return redirect(url_for('users.show', username=search_username))
 
-@users_blueprint.route('/feed', methods=['GET'])
+@users_blueprint.route('/feed/', methods=['GET'])
 @login_required
 def feed():
-    pass
+    user = User.get_or_none(User.id == current_user.id)
+    return render_template('users/feed.html', user=user)
 
 

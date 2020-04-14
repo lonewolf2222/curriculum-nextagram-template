@@ -43,6 +43,7 @@
         <a class="nav-item mx-2" href="{{url_for('sessions.new')}}">Login</a>
         <a class="nav-item mx-2" href="{{url_for('users.new')}}"> Sign Up</a>
         {% else %}
+        <a class="nav-item mx-2" href="/users/feed">My Feed</a>
         <a class="nav-item mx-2" href="{{url_for('users.edit', id=current_user.id)}}">Update Profile</a>
         <a class="nav-item mx-2" href="{{url_for('users.passwd', id=current_user.id)}}">Change Password</a>
         <a class="nav-item mx-2" href="{{url_for('images.new')}}">Upload Photos</a>
