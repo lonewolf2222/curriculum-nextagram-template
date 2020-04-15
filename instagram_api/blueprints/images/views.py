@@ -7,7 +7,7 @@ images_api_blueprint = Blueprint('images_api', __name__)
 
 @images_api_blueprint.route('/', methods=['GET'])
 def index():
-    user_id = request.get.args('userId')
+    user_id = request.args.get('userId')
     if user_id:
         images = Image.select().where(Image.user_id == user_id)
     else:
