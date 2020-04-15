@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, session, escape
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session, escape, abort
 from models.user import User
 from werkzeug.security import check_password_hash
 from flask_login import LoginManager, login_user, current_user, logout_user
@@ -7,6 +7,8 @@ from instagram_web.util.google_oauth import oauth
 
 login_manager = LoginManager()
 login_manager.init_app(app)
+login_manager.login_view = "sessions.new"
+login_manager.login_message_category = "info"
 
 sessions_blueprint = Blueprint('sessions',
                             __name__,
@@ -22,12 +24,15 @@ def new():
         flash(u"You are already logged in", 'info')
         return redirect(url_for('home'))
     else:
-        return render_template('sessions/new.html')
+        next = request.args.get('next')
+        flash(f"{next}")
+        return render_template('sessions/new.html', next=next)
 
 @sessions_blueprint.route('/', methods=['POST'])
 def create():
     username = request.form.get('username')
     password = request.form.get('password')
+    next_url = request.form.get('next')
     username = username.strip()
     password = password.strip()
     user = User.get_or_none(User.username == username)
@@ -35,8 +40,8 @@ def create():
     if user:
         if check_password_hash(user.password, password):
             login_user(user)
-            flash(u"Login succesful", 'success')
-            return redirect(url_for('home'))
+            flash(u"Login successful", 'success')
+            return redirect(next_url or url_for('home'))
         else:
             flash(u"Invalid password", 'warning')
             return redirect(url_for('sessions.new'))
