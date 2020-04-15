@@ -25,7 +25,6 @@ def new():
         return redirect(url_for('home'))
     else:
         next = request.args.get('next')
-        flash(f"{next}")
         return render_template('sessions/new.html', next=next)
 
 @sessions_blueprint.route('/', methods=['POST'])
@@ -40,7 +39,7 @@ def create():
     if user:
         if check_password_hash(user.password, password):
             login_user(user)
-            flash(u"Login successful", 'success')
+            flash(u"Log In Successful", 'success')
             return redirect(next_url or url_for('home'))
         else:
             flash(u"Invalid password", 'warning')
