@@ -67,7 +67,7 @@ def create():
     else:
         return jsonify({"message": ["Username or email already in use"], "status": "failed"}), 400
     
-@users_api_blueprint.route('/users/checkname', methods=['GET'])
+@users_api_blueprint.route('/users/check_name', methods=['GET'])
 def check_name():
     username = request.args.get('username')
     user = User.get_or_none(User.username == username)
