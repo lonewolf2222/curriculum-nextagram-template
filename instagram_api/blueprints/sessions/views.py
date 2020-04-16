@@ -40,19 +40,3 @@ def login():
             'message': 'Some error ocurred. Please try again'
         }
         return jsonify(response), 401
-
-@sessions_api_blueprint.route('/test', methods=['POST'])
-def test():
-    req_data = request.get_json()
-    username = req_data['username']
-    password = req_data['password']
-    user = User.get_or_none(username=username)
-    password_check = check_password_hash(user.password, password)
-    if password_check:
-        password_ok = "ok"
-    else:
-        password_ok = "notok"
-    return '''
-        username is: {}
-        password is: {}
-        password_ok is: {}'''.format(username, password, password_ok)

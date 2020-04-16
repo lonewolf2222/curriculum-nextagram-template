@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
 from models.user import User
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import create_access_token, get_jwt_identity,jwt_required
 from werkzeug.security import generate_password_hash
 
 users_api_blueprint = Blueprint('users_api',
@@ -16,6 +16,24 @@ def index():
         user_array.append({"id": u.id, "username": u.username,
                         "profileImage": u.profile_image_url})
     return jsonify(user_array)
+
+@users_api_blueprint.route('/users/<id>', methods=['GET'])
+def showuser(id):
+    user=User.get_or_none(User.id == id)
+    if user:
+        return jsonify({"id": user.id, "username": user.username,
+                        "profileImage": user.profile_image_url}), 200
+    else:
+        return jsonify({"message": ["User does not exist"], "status": "failed"}), 404
+        
+
+@users_api_blueprint.route('/users/me', methods=['GET'])
+@jwt_required
+def showme():
+    username = get_jwt_identity()
+    user = User.get_or_none(User.username == username)
+    return jsonify({"id": user.id, "username": user.username,
+                        "profileImage": user.profile_image_url}), 200
 
 @users_api_blueprint.route('/users', methods=['POST'])
 def create():
@@ -48,6 +66,15 @@ def create():
 
     else:
         return jsonify({"message": ["Username or email already in use"], "status": "failed"}), 400
+    
+@users_api_blueprint.route('/users/checkname', methods=['GET'])
+def check_name():
+    username = request.args.get('username')
+    user = User.get_or_none(User.username == username)
+    if user:
+        return jsonify({"exists": True, "valid": False}), 200
+    else:
+        return jsonify({"exists": False, "valid": True}), 200
 
 
 
