@@ -15,3 +15,4 @@ app.register_blueprint(images_api_blueprint, url_prefix='/api/v1')
 app.register_blueprint(sessions_api_blueprint, url_prefix='/api/v1/')
 
 csrf.exempt(sessions_api_blueprint)
+csrf.exempt(users_api_blueprint)
