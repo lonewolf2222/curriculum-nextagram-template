@@ -1,2 +1,2 @@
-release: pip install peewee-db-evolve && python migrate.py
+release: python migrate.py
 web: gunicorn start:app --preload
