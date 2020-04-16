@@ -1,30 +1,58 @@
-from flask import Blueprint, jsonify, request, make_response
+from flask import Blueprint, jsonify, request
 from models.user import User
+from app import app
+import os
 from werkzeug.security import check_password_hash
+from flask_jwt_extended import (
+    JWTManager, jwt_required, create_access_token,
+    get_jwt_identity
+)
+
+secret_key = os.environ.get("JWT_SECRET_KEY")
+app.config['JWT_SECRET_KEY'] = secret_key
+jwt = JWTManager(app)
 
 sessions_api_blueprint = Blueprint('sessions_api', __name__)
 
-@sessions_api_blueprint.route('login', methods=['POST'])
+@sessions_api_blueprint.route('/login', methods=['POST'])
 def login():
-    result = request.get_json()
-    user = User.get_or_none(username=result.get('username'))
-    password_correct = check_password_hash(user.password, result.get('password'))
-    if user and password_correct:
+    req_data = request.get_json()
+    username = req_data['username']
+    password = req_data['password']
+    user = User.get_or_none(username=username)
+    password_check = check_password_hash(user.password, password)
+    if user and password_check:
 
-        auth_token = user.encode_auth_token(user.id)
+        access_token = create_access_token(identity=user.username)
 
-        responseObject = {
-            'status': 'success',
+        response = {
+            'auth_token': access_token,
             'message': 'Successfully signed in',
-            'auth_token': auth_token.decode(),
+            'status': 'success',
+            'auth_token': access_token,
             'user': {"id": user.id, "username": user.username, "profile_picture": user.profile_image_url}
         }
-        return make_response(jsonify(responseObject)), 201
+        return jsonify(response), 201
     
     else:
-        responseObject = {
+        response = {
             'status': 'fail',
             'message': 'Some error ocurred. Please try again'
         }
-        return make_response(jsonify(responseObject)), 401
+        return jsonify(response), 401
 
+@sessions_api_blueprint.route('/test', methods=['POST'])
+def test():
+    req_data = request.get_json()
+    username = req_data['username']
+    password = req_data['password']
+    user = User.get_or_none(username=username)
+    password_check = check_password_hash(user.password, password)
+    if password_check:
+        password_ok = "ok"
+    else:
+        password_ok = "notok"
+    return '''
+        username is: {}
+        password is: {}
+        password_ok is: {}'''.format(username, password, password_ok)

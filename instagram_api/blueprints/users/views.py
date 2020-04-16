@@ -6,7 +6,7 @@ users_api_blueprint = Blueprint('users_api',
                              template_folder='templates')
 
 
-@users_api_blueprint.route('/', methods=['GET'])
+@users_api_blueprint.route('/users', methods=['GET'])
 def index():
     users = User.select()
     user_array = []
