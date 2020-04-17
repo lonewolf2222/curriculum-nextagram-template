@@ -14,8 +14,9 @@ def index():
     users = User.select()
     user_array = []
     for u in users:
-        user_array.append({"id": u.id, "username": u.username,
-                        "profileImage": u.profile_image_url})
+        if len(u.images) > 0:
+            user_array.append({"id": u.id, "username": u.username,
+                            "profileImage": u.profile_image_url})
     return jsonify(user_array), 200
 
 @users_api_blueprint.route('/<id>', methods=['GET'])
