@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify, request
 from models.user import User
+from app import csrf
 from flask_jwt_extended import create_access_token, get_jwt_identity,jwt_required
 from werkzeug.security import generate_password_hash
 
@@ -8,16 +9,16 @@ users_api_blueprint = Blueprint('users_api',
                              template_folder='templates')
 
 
-@users_api_blueprint.route('/users', methods=['GET'])
+@users_api_blueprint.route('/', methods=['GET'])
 def index():
     users = User.select()
     user_array = []
     for u in users:
         user_array.append({"id": u.id, "username": u.username,
                         "profileImage": u.profile_image_url})
-    return jsonify(user_array)
+    return jsonify(user_array), 200
 
-@users_api_blueprint.route('/users/<id>', methods=['GET'])
+@users_api_blueprint.route('/<id>', methods=['GET'])
 def showuser(id):
     user=User.get_or_none(User.id == id)
     if user:
@@ -25,17 +26,16 @@ def showuser(id):
                         "profileImage": user.profile_image_url}), 200
     else:
         return jsonify({"message": ["User does not exist"], "status": "failed"}), 404
-        
 
-@users_api_blueprint.route('/users/me', methods=['GET'])
+@users_api_blueprint.route('/me', methods=['GET'])
 @jwt_required
 def showme():
     username = get_jwt_identity()
     user = User.get_or_none(User.username == username)
     return jsonify({"id": user.id, "username": user.username,
-                        "profileImage": user.profile_image_url}), 200
+                     "email": user.email,  "profile_picture": user.profile_image_url}), 200
 
-@users_api_blueprint.route('/users', methods=['POST'])
+@users_api_blueprint.route('/create', methods=['POST'])
 def create():
     req_data = request.get_json()
     username = req_data['username']
@@ -67,7 +67,7 @@ def create():
     else:
         return jsonify({"message": ["Username or email already in use"], "status": "failed"}), 400
     
-@users_api_blueprint.route('/users/check_name', methods=['GET'])
+@users_api_blueprint.route('/check_name', methods=['GET'])
 def check_name():
     username = request.args.get('username')
     user = User.get_or_none(User.username == username)

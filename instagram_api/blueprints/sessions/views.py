@@ -30,7 +30,8 @@ def login():
             'message': 'Successfully signed in',
             'status': 'success',
             'auth_token': access_token,
-            'user': {"id": user.id, "username": user.username, "profile_picture": user.profile_image_url}
+            'user': {"id": user.id, "username": user.username, 
+                    "email": user.email, "profile_picture": user.profile_image_url}
         }
         return jsonify(response), 201
     
