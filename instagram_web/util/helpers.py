@@ -1,6 +1,8 @@
 import boto3, botocore
 from config import Config
 import re
+from urllib.parse import urlparse, urljoin
+from flask import request
 
 def password_checker(password):
     errors=[]
@@ -44,4 +46,10 @@ def upload_file_to_s3(file, acl="public-read"):
         return e
     
     return "{}{}".format(Config.S3_LOCATION, file.filename)
+
+def is_safe_url(target):
+    ref_url = urlparse(request.host_url)
+    test_url = urlparse(urljoin(request.host_url, target))
+    return test_url.scheme in ('http', 'https') and \
+           ref_url.netloc == test_url.netloc
 

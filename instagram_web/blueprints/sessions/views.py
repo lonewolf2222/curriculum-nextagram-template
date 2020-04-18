@@ -4,6 +4,7 @@ from werkzeug.security import check_password_hash
 from flask_login import LoginManager, login_user, current_user, logout_user
 from app import app
 from instagram_web.util.google_oauth import oauth
+from flask import session
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -21,17 +22,17 @@ def load_user(user_id):
 @sessions_blueprint.route('/new', methods=['GET'])
 def new():
     if current_user.is_authenticated:
-        flash(u"You are already logged in", 'info')
+        # flash(u"You are already logged in", 'info')
         return redirect(url_for('home'))
     else:
-        next = request.args.get('next')
-        return render_template('sessions/new.html', next=next)
+        session['next_url'] = request.args.get('next')
+        return render_template('sessions/new.html')
 
 @sessions_blueprint.route('/', methods=['POST'])
 def create():
     username = request.form.get('username')
     password = request.form.get('password')
-    next_url = request.form.get('next')
+    # next_url = request.form.get('next')
     username = username.strip()
     password = password.strip()
     user = User.get_or_none(User.username == username)
@@ -40,7 +41,7 @@ def create():
         if check_password_hash(user.password, password):
             login_user(user)
             flash(u"Log In Successful", 'success')
-            return redirect(next_url or url_for('home'))
+            return redirect(url_for('home'))
         else:
             flash(u"Invalid password", 'warning')
             return redirect(url_for('sessions.new'))

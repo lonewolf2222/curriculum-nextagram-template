@@ -16,6 +16,8 @@ class Config(object):
     GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID")
     GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET")
 
+    SESSION_TYPE = os.environ.get("SESSION_TYPE")
+
 class ProductionConfig(Config):
     DEBUG = False
     ASSETS_DEBUG = False

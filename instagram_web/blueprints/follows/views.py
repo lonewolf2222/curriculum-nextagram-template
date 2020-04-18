@@ -53,17 +53,13 @@ def create(idol_id):
 def delete(idol_id):
     idol = User.get_or_none(User.id == idol_id)
     unfollow = IdolFan.get_or_none((IdolFan.fan_id == current_user.id) & (IdolFan.idol_id == idol.id))
-    if not unfollow:
-        flash(u"Cannot unfollow", 'warning')
+    try:
+        unfollow.delete_instance()
+        flash(u"You unfollowed this user", 'success')
         return redirect(url_for('users.show', username=idol.username))
-    else:
-        try:
-            unfollow.delete_instance()
-            flash(u"You unfollowed this user", 'success')
-            return redirect(url_for('users.show', username=idol.username))
-        except:
-            flash(u"An error has occurred. Please try again", 'warning')
-            return redirect(url_for('users.show', username=idol.username))
+    except:
+        flash(u"An error has occurred. Please try again", 'warning')
+        return redirect(url_for('users.show', username=idol.username))
 
 
 

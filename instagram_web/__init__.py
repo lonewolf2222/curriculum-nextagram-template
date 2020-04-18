@@ -1,5 +1,5 @@
 from app import app
-from flask import render_template, redirect, url_for
+from flask import render_template, redirect, url_for, session, abort
 from instagram_web.blueprints.users.views import users_blueprint
 from instagram_web.blueprints.sessions.views import sessions_blueprint
 from instagram_web.blueprints.images.views import images_blueprint
@@ -8,8 +8,12 @@ from instagram_web.blueprints.follows.views import follows_blueprint
 from flask_assets import Environment, Bundle
 from .util.assets import bundles
 from instagram_web.util.google_oauth import oauth
+from instagram_web.util.helpers import is_safe_url
+from flask_session import Session
+
 
 oauth.init_app(app)
+Session(app)
 
 assets = Environment(app)
 assets.register(bundles)
@@ -42,4 +46,10 @@ def page_not_authorized(e):
 
 @app.route("/")
 def home():
+    if session.get('next_url'):
+        next_url = session.get('next_url')
+        session.pop('next_url', None)
+        if not is_safe_url(next_url):
+            return abort(400)
+        return redirect(next_url)
     return redirect(url_for('users.index'))
