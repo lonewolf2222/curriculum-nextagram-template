@@ -3,14 +3,11 @@ from models.user import User
 from app import app
 import os
 from werkzeug.security import check_password_hash
-from flask_jwt_extended import (
-    JWTManager, jwt_required, create_access_token,
-    get_jwt_identity
-)
+from flask_jwt_extended import jwt_required, create_access_token, get_jwt_identity
 
-secret_key = os.environ.get("JWT_SECRET_KEY")
-app.config['JWT_SECRET_KEY'] = secret_key
-jwt = JWTManager(app)
+# secret_key = os.environ.get("JWT_SECRET_KEY")
+# app.config['JWT_SECRET_KEY'] = secret_key
+# jwt = JWTManager(app)
 
 sessions_api_blueprint = Blueprint('sessions_api', __name__)
 

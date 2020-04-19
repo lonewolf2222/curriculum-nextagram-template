@@ -1,9 +1,15 @@
 from app import app
 from app import csrf
 from flask_cors import CORS
+from flask_jwt_extended import JWTManager
+import os
 
 cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 # CORS(app)
+
+secret_key = os.environ.get("JWT_SECRET_KEY")
+app.config['JWT_SECRET_KEY'] = secret_key
+jwt = JWTManager(app)
 
 ## API Routes ##
 from instagram_api.blueprints.users.views import users_api_blueprint
