@@ -22,6 +22,15 @@ def send_email_follow(sender, receiver_email):
               "subject": f"Follow Request from {sender}!",
               "text": f"Please click on the link to review and approve: {mydomain}/follows/new"})
 
+def send_email_reset(receiver_email, reset_token):
+    return requests.post(
+        f"https://api.mailgun.net/v3/{mailgun_domain}/messages",
+        auth=("api", os.environ.get("MAILGUN_API_KEY")),
+        data={"from": f"Nextagram Admin <mailgun@{mailgun_domain}>",
+              "to": [f"{receiver_email}"],
+              "subject": "Password reset request received!",
+              "text": f"Please click on the link to reset your password: {mydomain}/sessions/verify_token/{reset_token}"})
+
 # def send_email_follow(sender, receiver_email):
 #     return requests.post(
 #         f"https://api.mailgun.net/v3/{mailgun_domain}/messages",
