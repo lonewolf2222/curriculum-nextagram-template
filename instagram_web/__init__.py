@@ -44,12 +44,16 @@ def page_forbidden(e):
 def page_not_authorized(e):
     return render_template('401.html'), 401
 
-@app.route("/")
-def home():
+@app.route("/check_redirect")
+def check_redirect():
     if session.get('next_url'):
         next_url = session.get('next_url')
         session.pop('next_url', None)
         if not is_safe_url(next_url):
             return abort(400)
         return redirect(next_url)
+    return redirect(url_for('users.index'))
+    
+@app.route("/")
+def home(): 
     return redirect(url_for('users.index'))
