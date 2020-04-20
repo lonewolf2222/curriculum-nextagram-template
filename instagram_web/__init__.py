@@ -8,7 +8,6 @@ from instagram_web.blueprints.follows.views import follows_blueprint
 from flask_assets import Environment, Bundle
 from .util.assets import bundles
 from instagram_web.util.google_oauth import oauth
-from instagram_web.util.helpers import is_safe_url
 from flask_session import Session
 
 
@@ -40,20 +39,6 @@ def page_not_found(e):
 def page_forbidden(e):
     return render_template('403.html'), 403
 
-@app.errorhandler(401)
-def page_not_authorized(e):
-    return render_template('401.html'), 401
-
-@app.route("/check_redirect")
-def check_redirect():
-    if session.get('next_url'):
-        next_url = session.get('next_url')
-        session.pop('next_url', None)
-        if not is_safe_url(next_url):
-            return abort(400)
-        return redirect(next_url)
-    return redirect(url_for('users.index'))
-    
 @app.route("/")
 def home(): 
     return redirect(url_for('users.index'))
