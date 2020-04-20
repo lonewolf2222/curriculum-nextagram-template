@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash
 from models.user import User
 from models.follow import IdolFan
 from flask_login import current_user, login_required
-from instagram_web.util.sendmail import send_email_follow
+from instagram_web.util.sendmail import send_email_follow, send_email_approved
 
 
 follows_blueprint = Blueprint('follows',
@@ -22,7 +22,8 @@ def edit(fan_username):
     request = IdolFan.get_or_none((IdolFan.idol_id == current_user.id) & (IdolFan.fan_id == fan.id))
     request.approved = True
     request.save()
-    flash(u"Request approved", 'success')
+    send_email_approved(sender=current_user.username, receiver_email=fan.email)
+    flash(u"Approved! The requester has been notified", 'success')
     return redirect(url_for('follows.new'))
 
 @follows_blueprint.route('/<idol_id>', methods=['POST'])

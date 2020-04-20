@@ -36,7 +36,8 @@ def create(image_id):
         sender = current_user.username
         receiver = User.get_or_none(User.id == image.user_id)
         receiver_email = receiver.email
-        send_email(sender, receiver_email, amount)
+        image_url = image.user_images_url
+        send_email(sender, receiver_email, amount, image_url)
         flash(u"Thank you for your donation", 'success')
         flash(u"The owner of the photo has been notified", 'success')
         return redirect(url_for('home'))

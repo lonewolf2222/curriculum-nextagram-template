@@ -90,6 +90,8 @@ def authorize():
 def forgot_password():
     if current_user.is_authenticated:
         return redirect(url_for('home'))
+    if session.get('saved_email'):
+        session.pop('saved_email', None)  # always clear session saved_email first
     return render_template('sessions/forgot.html')
 
 @sessions_blueprint.route('/reset_password', methods=['POST'])
@@ -98,11 +100,16 @@ def reset_password():
     user = User.get_or_none(User.email == email)
     if user:
         reset_token = jwt.encode({'email': user.email, 'exp': time()+600}, app.config['SECRET_KEY']).decode('utf-8')
-        send_email_reset(receiver_email=email, reset_token=reset_token)
-        flash(u"An email with instructions have been sent to your Inbox", 'info')
-        return redirect(url_for('home'))
-    flash(u"Email does not exist", 'warning')
-    return redirect(url_for('sessions.forgot_password'))
+        try:
+            send_email_reset(receiver_email=email, reset_token=reset_token)
+            flash(u"An email with instructions have been sent to your Inbox", 'info')
+            return redirect(url_for('home'))
+        except:
+            flash(u"An error have occured. Please try again", 'warning')
+            return redirect(url_for('sessions.forgot_password'))
+    else:
+        flash(u"Email does not exist", 'warning')
+        return redirect(url_for('sessions.forgot_password'))
 
 @sessions_blueprint.route('/verify_token/<reset_token>', methods=['GET'])
 def verify_token(reset_token): 
