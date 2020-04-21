@@ -59,19 +59,21 @@ def create():
 @users_blueprint.route('/<username>', methods=["GET"])
 @login_required
 def show(username):
-
+    d_total = 0
     user = User.get_or_none(User.username == username)
     if not user:
         flash(u"User does not exist!",'warning')
         return redirect(url_for('home'))
     else:
+        d_total = user.donation_total
+        d_total = str(d_total)
         idol = IdolFan.get_or_none((IdolFan.idol_id == user.id) & (IdolFan.fan_id == current_user.id))
         if idol and idol.approved:
             status = "approved"
-            return render_template('users/show.html', user=user, status=status)
+            return render_template('users/show.html', user=user, status=status, d_total=d_total)
         else:
             status = "notapproved"
-            return render_template('users/show.html', user=user, status=status)
+            return render_template('users/show.html', user=user, status=status, d_total=d_total)
 
 @users_blueprint.route('/', methods=["GET"])
 def index():

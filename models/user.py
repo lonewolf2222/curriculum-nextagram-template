@@ -29,6 +29,14 @@ class User(BaseModel, UserMixin):
             return True
         else:
             return False
+    
+    @hybrid_property
+    def donation_total(self):
+        d_total = 0
+        for d in self.donations:
+            d_total = d_total + d.amount
+        d_total = round(d_total, 2)
+        return d_total
 
     def is_following(self, idol_id):
         from models.follow import IdolFan
