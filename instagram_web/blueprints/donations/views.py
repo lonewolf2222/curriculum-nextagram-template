@@ -6,6 +6,7 @@ from flask_login import current_user, login_required
 from instagram_web.util.braintree import gateway
 from instagram_web.util.sendmail import send_email
 
+
 donations_blueprint = Blueprint(
     'donations', __name__, template_folder="templates")
 
@@ -35,6 +36,8 @@ def create(image_id):
         donation.save()
         sender = current_user.username
         receiver = User.get_or_none(User.id == image.user_id)
+        amount = float(amount)
+        amount = "{:.2f}".format(amount)
         receiver_email = receiver.email
         image_url = image.user_images_url
         send_email(sender, receiver_email, amount, image_url)

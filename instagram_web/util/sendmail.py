@@ -17,13 +17,12 @@ def send_async_email(receiver_email, subject, contents):
 def send_email(sender, receiver_email, amount, image_url):
     subject="Congrats! You have received a donation"
     contents="""<html><head></head><body><p>Your photo below have received a donation of USD{} from {} </p> <br> <img src="{}" style="width:100px;height:100px"></body></html>""".format(amount, sender, image_url)
-    # contents=[f"You have received a donation of USD{amount} from {sender}"]
     Thread(target=send_async_email, args=(receiver_email, subject, contents)).start()
 
 def send_email_follow(sender, receiver_email):
     subject=f"Request to follow from {sender}"
     url=f'{mydomain}/follows/new'
-    contents="""<html><head></head><body><p>Please click on the link below to review and approve </p> <br> <a href="{}">Click Here</a></body></html>""".format(url)
+    contents="""<html><head></head><body><p>Please click on the link below to review and approve </p> <br> <a href="{}">Click To Approve</a></body></html>""".format(url)
     Thread(target=send_async_email, args=(receiver_email, subject, contents)).start()
 
 def send_email_approved(sender, receiver_email):

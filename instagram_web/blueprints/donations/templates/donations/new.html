@@ -8,18 +8,18 @@
 {% endblock %}
 
 {% block content %}
-<img src="{{image.user_images_url}}" style="width:75px; height:75px">
+<img src="{{image.user_images_url}}" style="width:100px; height:100px">
 
 <form id="payment-form" action="{{url_for('donations.create', image_id=image.id)}}" method="POST">
 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
 <div>
     <label for="amount">Enter Amount To Donate For This Photo:</label>
-    <input type='number' name='amount' class="form-control" />
+    <input type='number' name='amount' class="form-control" step="0.1" min="1" max="999" />
 </div>
 <div>
     <input type="hidden" id="nonce" name="payment_method_nonce"/>
 </div>
-<div id="dropin-container"></div>
+<div id="dropin-container" style="width: 50%;"></div>
 <button type="submit" id="submit-button">Request payment method</button>
 </form>
 

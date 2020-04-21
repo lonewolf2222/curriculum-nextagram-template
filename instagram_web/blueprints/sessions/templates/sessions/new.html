@@ -2,28 +2,31 @@
 {% block content %}
 
 <div class="container-fluid">
-<h4 style="text-align:center">Login with Google Email or Nextagram Username</h4>
-<br>
-<br>
-<div>
-<a class="google btn" style="background-color:dodgerblue;color:cornsilk" href="{{ url_for('sessions.google_login') }}">
-  <i class="fa fa-google fa-fw"></i>Login With Google
-</a>
-</div>
-<br>
-<br>
-
-<form action="{{ url_for('sessions.create') }}" method="POST">
-    <input type="hidden" name="csrf_token" value="{{ csrf_token()}}"/>
-    <div class="form-group">
-        <label for="username">Username:</label>
-        <input type='text' name='username' class="form-control" />
+  <div class="row d-flex justify-content-center">
+    <div class="col-md-6">
+      <h4 style="text-align:center">Login with Google Email or Nextagram Username</h4>
+      <br>
+      <div>
+        <a class="google btn" style="background-color:dodgerblue;color:cornsilk" href="{{ url_for('sessions.google_login') }}">
+          <i class="fab fa-google"></i> Login With Google
+        </a>
       </div>
-    <div class="form-group">
-        <label for="password">Password: </label>
-        <input type='password' name='password' class="form-control" />
+      <br>
+      <br>
+
+  <form action="{{ url_for('sessions.create') }}" method="POST">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token()}}"/>
+      <div class="form-group">
+          <label for="username">Username:</label>
+          <input type='text' name='username' class="form-control" required/>
+        </div>
+      <div class="form-group">
+          <label for="password">Password: </label>
+          <input type='password' name='password' class="form-control" required />
+      </div>
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
     </div>
-  <button type="submit" class="btn btn-primary">Submit</button>
-  </form>
+  </div>
 </div>
 {% endblock %}

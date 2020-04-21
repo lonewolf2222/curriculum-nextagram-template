@@ -19,3 +19,23 @@ footer a {
   text-decoration: none;
   color: #303030;
 }
+
+/* Navbar links */
+.navbar a {
+  float: left;
+  text-align: center;
+  padding: 8px;
+  color:#28a745;
+  text-decoration: none;
+  font-size: 17px;
+}
+
+/* Navbar links on mouse-over */
+.navbar a:hover {
+  background-color: grey;
+}
+
+.form-control {
+  width: 50%;
+  border: 2px solid;
+}

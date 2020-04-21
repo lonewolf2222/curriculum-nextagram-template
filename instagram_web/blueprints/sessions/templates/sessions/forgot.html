@@ -2,12 +2,12 @@
 {% block content %}
 
 <div class="container-fluid">
-<h4 style="text-align:center">Enter Email To Reset Password</h4>
+<h4>Enter Email To Reset Password</h4>
 <form action="{{ url_for('sessions.reset_password') }}" method="POST">
     <input type="hidden" name="csrf_token" value="{{ csrf_token()}}"/>
     <div class="form-group">
         <label for="email">Email:</label>
-        <input type='email' name='email' class="form-control" />
+        <input type='email' name='email' class="form-control" required/>
       </div>
       <button type="submit" class="btn btn-primary">Submit</button>
 </form>
