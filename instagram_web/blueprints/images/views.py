@@ -41,7 +41,7 @@ def upload(id):
                 img = Image(image_path=file.filename, desc=desc, user_id=id)
                 img.save()
                 flash(u"Your Photo is uploaded!", 'success')
-                return render_template('users/show.html', user=user)
+                return redirect(url_for('images.new'))
             except:
                 flash(u"An error has occured. Please try again", 'warning')
                 return redirect(url_for('images.new'))

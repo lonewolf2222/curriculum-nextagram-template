@@ -5,7 +5,7 @@
     <div class="row mb-5">
         <div class="col-sm-3">
             <img src="{{user.profile_image_url}}" class="img-rounded" style="height:200px; width: 200px;">
-            <p>Donations Received : ${{d_total}}</p> 
+            <p>Donations Received : ${{user.donation_total | string}}</p> 
         </div>
         {% if current_user.username == user.username %}
         <div class="col-sm-6">
@@ -68,12 +68,12 @@
         </div>
         {% endif %}
     </div>
-{% if user.private == True and current_user.username != user.username and status == "notapproved" %}
+{% if user.private == True and current_user.username != user.username and not current_user.is_approved(user.id) %}
 <h3 style="text-align: center;"> Private Photo Collection</h3>
 
 {% elif current_user.username != user.username %}
     <div class="row">
-        {% for img in user.images %}
+        {% for img in images_list %}
         <div class="col-md-3 mb-3">
             <img src="{{img.user_images_url}}" class="img-fluid" style="width:100%; height:250px;object-fit: cover;">
             <a class="btn btn-primary" href="/donations/{{img.id}}/new" role="button">Donate</a>
@@ -82,7 +82,7 @@
     </div>
 {% else %}
     <div class="row">
-        {% for img in user.images %}
+        {% for img in images_list %}
         <div class="col-md-3 mb-3">
             <img src="{{img.user_images_url}}" class="img-fluid" style="width:100%; height:250px;object-fit: cover;">
             <a class="btn btn-primary" href="/images/delete/{{img.id}}" role="button">Delete</a>
@@ -90,5 +90,16 @@
         {% endfor %}
     </div>
 {% endif %}
+
+    <div class="d-flex justify-content-center">
+        {% if page > 1 %}
+            <a class="previous" href="/users/{{user.username}}/?page={{page-1}}">Prev Page</a>
+        {% endif %}
+        {% if pagination.get_page_count() > page %}
+            <a class="next" href="/users/{{user.username}}/?page={{page+1}}">Next Page</a>
+        {% endif %}
+    <br>
+    <br>
+    </div>
 </div>
 {% endblock %}

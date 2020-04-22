@@ -8,6 +8,7 @@ from peewee import prefetch
 from flask_login import LoginManager, login_user, current_user, logout_user, login_required
 from werkzeug.utils import secure_filename
 from instagram_web.util.helpers import upload_file_to_s3, allowed_file, password_checker
+from playhouse.flask_utils import object_list
 
 users_blueprint = Blueprint('users',
                             __name__,
@@ -56,31 +57,32 @@ def create():
                     flash(e, 'warning')
                 return redirect(url_for('users.new'))
 
-@users_blueprint.route('/<username>', methods=["GET"])
+@users_blueprint.route('/<username>/', methods=["GET"])
 @login_required
 def show(username):
-    d_total = 0
     user = User.get_or_none(User.username == username)
     if not user:
         flash(u"User does not exist!",'warning')
         return redirect(url_for('home'))
     else:
-        d_total = user.donation_total
-        d_total = str(d_total)
-        idol = IdolFan.get_or_none((IdolFan.idol_id == user.id) & (IdolFan.fan_id == current_user.id))
-        if idol and idol.approved:
-            status = "approved"
-            return render_template('users/show.html', user=user, status=status, d_total=d_total)
+        images = user.images
+        if images:
+            return object_list(
+                '/users/show.html',
+                query=images,
+                context_variable='images_list',
+                paginate_by=8,
+                user=user)
         else:
-            status = "notapproved"
-            return render_template('users/show.html', user=user, status=status, d_total=d_total)
+            flash(f'{user.username} have no photo collection yet', 'info')
+            return redirect(url_for('home'))
+        # return render_template('users/show.html', user=user)
 
 @users_blueprint.route('/', methods=["GET"])
 def index():
     users = User.select()
     images = Image.select()
     users_with_images = prefetch(users, images)
-    # users_with_images = User.select().join(Image).order_by(Image.created_at.desc()).prefetch(Image)
     return render_template('users/index.html', users_with_images = users_with_images)
 
 @users_blueprint.route('/<int:id>/edit', methods=['GET'])
@@ -197,6 +199,15 @@ def search():
 @login_required
 def feed():
     user = User.get_or_none(User.id == current_user.id)
-    return render_template('users/feed.html', user=user)
+    image_feed = user.image_feed
+    if image_feed:
+        return object_list(
+            'users/feed.html',
+            query=image_feed,
+            context_variable='feed_list',
+            paginate_by=8)
+    else:
+        flash(u'You have no image feed yet', 'info')
+        return redirect(url_for('home'))
 
 

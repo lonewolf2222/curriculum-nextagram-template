@@ -32,15 +32,22 @@ class User(BaseModel, UserMixin):
     
     @hybrid_property
     def donation_total(self):
-        d_total = 0
+        donation_total = 0
         for d in self.donations:
-            d_total = d_total + d.amount
-        d_total = round(d_total, 2)
-        return d_total
+            donation_total = donation_total + d.amount
+        donation_total = round(donation_total, 2)
+        return donation_total
 
     def is_following(self, idol_id):
         from models.follow import IdolFan
         if IdolFan.get_or_none((IdolFan.idol_id == idol_id) & (IdolFan.fan_id == self.id)):
+            return True
+        else:
+            return False
+    
+    def is_approved(self, idol_id):
+        from models.follow import IdolFan
+        if IdolFan.get_or_none((IdolFan.idol_id == idol_id) & (IdolFan.fan_id == self.id) & (IdolFan.approved == True)):
             return True
         else:
             return False
