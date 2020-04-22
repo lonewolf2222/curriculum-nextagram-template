@@ -42,28 +42,28 @@
         <a href="{{url_for('users.new')}}"><i class="fas fa-user-plus"></i> Sign Up</a>
       </li>
       <li class="nav-item mx-2">
-        <a href="{{url_for('sessions.forgot_password')}}"><i class="fas fa-exclamation-circle"></i> Forgot Password</a>
+        <a href="{{url_for('sessions.forgot_password')}}"><i class="far fa-question-circle"></i> Forgot Password</a>
       </li>
     </ul>
     {% else %}
     <ul class="navbar-nav mr-auto">
       <li class="nav-item mx-2">
-        <a class="nav-item mx-2" href="/users/feed"><i class="fas fa-rss-square"></i>My Feed</a>
+        <a class="nav-item mx-2" href="/users/feed"><i class="fas fa-rss-square"></i> My Feed</a>
       </li>
       <li class="nav-item mx-2">
-        <a class="nav-item mx-2" href="{{url_for('images.new')}}"><i class="fas fa-upload"></i>Upload Photos</a>
+        <a class="nav-item mx-2" href="{{url_for('images.new')}}"><i class="fas fa-upload"></i> Upload Photos</a>
       </li>
       <li class="nav-item mx-2">
-        <a class="nav-item mx-2" href="/users/{{current_user.username}}"><i class="far fa-images"></i>My Photos</a>
+        <a class="nav-item mx-2" href="/users/{{current_user.username}}"><i class="far fa-images"></i> My Photos</a>
       </li>
-      <li class="nav-item dropdown mx-2">
+      <li class="nav-item dropdown mx-2 position static">
         <a class="dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          <i class="fas fa-user"></i>My Account
+          <i class="fas fa-user"></i> My Account
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-          <a class="nav-item mx-2" href="{{url_for('users.edit', id=current_user.id)}}">Update Profile</a>
-          <a class="nav-item mx-2" href="/follows/new">Approve Requests</a>
-          <a class="nav-item mx-2" href="{{url_for('users.passwd', id=current_user.id)}}">Change Password</a>
+          <a class="nav-item mx-2" href="{{url_for('users.edit', id=current_user.id)}}"><i class="fas fa-user-edit"></i> Update Profile</a>
+          <a class="nav-item mx-2" href="/follows/new"><i class="fas fa-thumbs-up"></i> Approve Requests</a>
+          <a class="nav-item mx-2" href="{{url_for('users.passwd', id=current_user.id)}}"><i class="fas fa-key"></i> Change Password</a>
         </div>
       </li>
       <li class="nav-item mx-2">
@@ -71,10 +71,14 @@
       </li>
     </ul>
     {% endif %}
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item">
     <form class="form-inline my-2 my-lg-0" action="{{url_for('users.search', username=username)}}">
       <input class="form-control mr-sm-2" type="search" name="username" placeholder="Type Username" aria-label="Search">
       <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
     </form>
+      </li>
+    </ul>
   </div>
   </nav>
            

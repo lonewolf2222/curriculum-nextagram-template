@@ -9,7 +9,7 @@
         </div>
         {% if current_user.username == user.username %}
         <div class="col-sm-6">
-            <h2>My Followers</h2>
+            <h5>My Followers</h5>
             <div class="row">
                 {% for f in user.fans %}
                 <div class="col-sm-2">
@@ -18,15 +18,35 @@
                 </div>
                 {% endfor %}
             </div>
-        </div>
-        {% else %}
-        <div class="col-sm-6">
-            <h2>@{{user.username}} Following</h2>
+            <br>
+            <h5>I Am Following</h5>
             <div class="row">
                 {% for i in user.idols %}
                 <div class="col-sm-2">
                     <img src="{{i.profile_image_url}}" class="img-rounded" width="50px" height="50px">
                     <a href="/users/{{i.username}}">{{i.username}}</a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% else %}
+        <div class="col-sm-6">
+            <h5>@{{user.username}} Is Following</h5>
+            <div class="row">
+                {% for i in user.idols %}
+                <div class="col-sm-2">
+                    <img src="{{i.profile_image_url}}" class="img-rounded" width="50px" height="50px">
+                    <a href="/users/{{i.username}}">{{i.username}}</a>
+                </div>
+                {% endfor %}
+            </div>
+            <br>
+            <h5>@{{user.username}}'s Followers</h5>
+            <div class="row">
+                {% for f in user.fans %}
+                <div class="col-sm-2">
+                    <img src="{{f.profile_image_url}}" class="img-rounded" width="50px" height="50px">
+                    <a href="/users/{{f.username}}">{{f.username}}</a>
                 </div>
                 {% endfor %}
             </div>

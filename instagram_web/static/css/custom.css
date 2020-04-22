@@ -39,3 +39,8 @@ footer a {
   width: 50%;
   border: 2px solid;
 }
+
+.dropdown-menu {
+  min-width: 100px;
+  white-space: nowrap;
+}

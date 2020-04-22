@@ -3,7 +3,7 @@
 
 <h2 style="text-align:center"> Welcome to Nextagram</h2>
 {% for user in users_with_images %}
-{% if user.images | length > 0 and user.private == False %}
+{% if user.images | length > 0 %}
 <div class="row pt-3 pb-3">
     <div class="col-md-2 mb-5">
         <div class="card" style="border: none;">
