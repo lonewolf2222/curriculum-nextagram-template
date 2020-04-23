@@ -14,14 +14,14 @@
     </div>
     <div class="d-flex justify-content-center">
     {% if page > 1 %}
-        <a class="previous" href="/users/feed/?page={{page-1}}">Prev Page</a>
+        <a class="previous" href="/users/feed/?page={{page-1}}">&laquo; Previous</a>
     {% endif %}
     {% if pagination.get_page_count() > page %}
-        <a class="next" href="/users/feed/?page={{page+1}}">Next Page</a>
+        <a class="next" href="/users/feed/?page={{page+1}}">Next &raquo;</a>
     {% endif %}
-    <br>
-    <br>
     </div>
+    <br>
+    <br>
 </div>
 
 {% endblock %}

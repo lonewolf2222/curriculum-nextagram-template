@@ -3,7 +3,7 @@
 
 <h2 style="text-align:center"> Welcome to Nextagram</h2>
 {% for user in users_with_images %}
-{% if user.images | length > 0 %}
+
 <div class="row pt-3 pb-3">
     <div class="col-md-2 mb-5">
         <div class="card" style="border: none;">
@@ -26,6 +26,15 @@
         </div>
     </div>
 </div>
-{% endif %}
+
 {% endfor %}
+<div class="d-flex justify-content-center">
+    {% if page > 1 %}
+    <a class="previous" href="/users/?page={{page-1}}">&laquo; Previous</a>
+    {% endif %}
+    {% if pagination.get_page_count() > page %}
+    <a class="next" href="/users/?page={{page+1}}">Next &raquo;</a>
+    {% endif %} 
+</div>
+<br>
 {% endblock %}

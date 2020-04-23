@@ -5,7 +5,9 @@
     <div class="row mb-5">
         <div class="col-sm-3">
             <img src="{{user.profile_image_url}}" class="img-rounded" style="height:200px; width: 200px;">
-            <p>Donations Received : ${{user.donation_total | string}}</p> 
+            <br>
+            <p>Donation Given &emsp; &nbsp;&nbsp;: ${{user.donation_given | string}}</p>
+            <p>Donation Received : ${{user.donation_received | string}}</p> 
         </div>
         {% if current_user.username == user.username %}
         <div class="col-sm-6">
@@ -93,13 +95,13 @@
 
     <div class="d-flex justify-content-center">
         {% if page > 1 %}
-            <a class="previous" href="/users/{{user.username}}/?page={{page-1}}">Prev Page</a>
+        <a class="previous" href="/users/{{user.username}}/?page={{page-1}}">&laquo; Previous</a>
         {% endif %}
         {% if pagination.get_page_count() > page %}
-            <a class="next" href="/users/{{user.username}}/?page={{page+1}}">Next Page</a>
-        {% endif %}
-    <br>
-    <br>
+        <a class="next" href="/users/{{user.username}}/?page={{page+1}}">Next &raquo;</a>
+        {% endif %} 
     </div>
+    <br>
+    <br>
 </div>
 {% endblock %}

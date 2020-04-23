@@ -80,10 +80,16 @@ def show(username):
 
 @users_blueprint.route('/', methods=["GET"])
 def index():
-    users = User.select()
-    images = Image.select()
-    users_with_images = prefetch(users, images)
-    return render_template('users/index.html', users_with_images = users_with_images)
+    users_with_images = User.select().join(Image, on=(User.id==Image.user_id)).distinct()
+    return object_list(
+            '/users/index.html',
+            query=users_with_images,
+            context_variable='users_with_images',
+            paginate_by=5)
+    # users = User.select()
+    # images = Image.select()
+    # users_with_images = prefetch(users, images)
+    # return render_template('users/index.html', users_with_images = users_with_images)
 
 @users_blueprint.route('/<int:id>/edit', methods=['GET'])
 @login_required

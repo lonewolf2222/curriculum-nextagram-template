@@ -31,12 +31,23 @@ class User(BaseModel, UserMixin):
             return False
     
     @hybrid_property
-    def donation_total(self):
-        donation_total = 0
+    def donation_given(self):
+        donation_given = 0
         for d in self.donations:
-            donation_total = donation_total + d.amount
-        donation_total = round(donation_total, 2)
-        return donation_total
+            donation_given = donation_given + d.amount
+        donation_given = round(donation_given, 2)
+        return donation_given
+    
+    @hybrid_property
+    def donation_received(self):
+        from models.donation import Donation
+        from models.image import Image
+        donation_r = Donation.select().join(Image, on=(Donation.image_id == Image.id)).where(Image.user_id == self.id)
+        donation_received = 0
+        for d in donation_r:
+            donation_received = donation_received + d.amount
+        donation_received = round(donation_received, 2)
+        return donation_received
 
     def is_following(self, idol_id):
         from models.follow import IdolFan

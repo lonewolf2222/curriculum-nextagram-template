@@ -44,3 +44,15 @@ footer a {
   min-width: 100px;
   white-space: nowrap;
 }
+
+.previous {
+  display: inline-block;
+  background-color:grey;
+  color: black;
+}
+
+.next {
+  display: inline-block;
+  background-color: #4CAF50;
+  color: white;
+}
