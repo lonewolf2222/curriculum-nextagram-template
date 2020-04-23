@@ -1,5 +1,5 @@
 import os
-
+import redis
 
 class Config(object):
     DEBUG = False
@@ -20,6 +20,7 @@ class Config(object):
     FB_CLIENT_SECRET = os.environ.get("FB_CLIENT_SECRET")
 
     SESSION_TYPE = os.environ.get("SESSION_TYPE")
+    SESSION_REDIS = redis.from_url(os.environ.get("REDIS_URL"))
 
 class ProductionConfig(Config):
     DEBUG = False
