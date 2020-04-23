@@ -159,22 +159,26 @@ def facebook_login():
     redirect_uri = url_for('sessions.facebook_authorize', _external=True )
     return facebook_oauth.facebook.authorize_redirect(redirect_uri)
 
-@sessions_blueprint.route('/facebook_login/authorize', methods=['GET'])
+@sessions_blueprint.route('/authorize/facebook', methods=['GET'])
 def facebook_authorize():
-    facebook_oauth.facebook.authorize_access_token()
-    facebook_user_data = facebook_oauth.facebook.get(
-        "https://graph.facebook.com/me?fields=id,name,email,picture{url}"
-    ).json()
+    try:
+        facebook_oauth.facebook.authorize_access_token()
+        facebook_user_data = facebook_oauth.facebook.get(
+            "https://graph.facebook.com/me?fields=id,name,email,picture{url}"
+        ).json()
 
-    email = facebook_user_data["email"]
-    user = User.get_or_none(User.email == email)
-    if user:
-        login_user(user)
-        flash(u"Login successful", 'success')
-        return redirect(url_for('sessions.check_redirect'))
-    else:
-        flash(u"You do not have an account. Please sign up", 'info')
-        return redirect(url_for('users.new'))
+        email = facebook_user_data["email"]
+        user = User.get_or_none(User.email == email)
+        if user:
+            login_user(user)
+            flash(u"Login successful", 'success')
+            return redirect(url_for('sessions.check_redirect'))
+        else:
+            flash(u"You do not have an account. Please sign up", 'info')
+            return redirect(url_for('users.new'))
+    except:
+        flash(u"Login canceled", 'warning')
+        return redirect(url_for('sessions.new'))
 
 
 
