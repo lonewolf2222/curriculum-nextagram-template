@@ -8,10 +8,13 @@ from instagram_web.blueprints.follows.views import follows_blueprint
 from flask_assets import Environment, Bundle
 from .util.assets import bundles
 from instagram_web.util.google_oauth import oauth
+from instagram_web.util.facebook_oauth import facebook_oauth
 from flask_session import Session
 
 
 oauth.init_app(app)
+facebook_oauth.init_app(app)
+
 Session(app)
 
 assets = Environment(app)

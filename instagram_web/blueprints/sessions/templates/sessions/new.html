@@ -4,11 +4,15 @@
 <div class="container-fluid">
   <div class="row d-flex justify-content-center">
     <div class="col-md-6">
-      <h4 style="text-align:center">Login with Google Email or Nextagram Username</h4>
+      <h4 >Login With Social Media or Username</h4>
       <br>
       <div>
         <a class="google btn" style="background-color:dodgerblue;color:cornsilk" href="{{ url_for('sessions.google_login') }}">
           <i class="fab fa-google"></i> Login With Google
+        </a>
+        &emsp;
+        <a class="facebook btn" style="background-color:rgb(255, 113, 30);color:cornsilk" href="{{ url_for('sessions.facebook_login') }}">
+          <i class="fab fa-facebook"></i> Login With Facebook
         </a>
       </div>
       <br>

@@ -4,6 +4,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from flask_login import LoginManager, login_user, current_user, logout_user
 from app import app
 from instagram_web.util.google_oauth import oauth
+from instagram_web.util.facebook_oauth import facebook_oauth
 from instagram_web.util.helpers import password_checker
 from instagram_web.util.sendmail import send_email_reset
 import jwt
@@ -152,6 +153,30 @@ def new_password():
         session.pop('saved_email', None)
         flash(u"An error has occurred", 'warning')
         return redirect(url_for('sessions.forgot_password'))
+
+@sessions_blueprint.route('/facebook_login', methods=['GET'])
+def facebook_login():
+    redirect_uri = url_for('sessions.facebook_authorize', _external=True )
+    return facebook_oauth.facebook.authorize_redirect(redirect_uri)
+
+@sessions_blueprint.route('/facebook_login/authorize', methods=['GET'])
+def facebook_authorize():
+    facebook_oauth.facebook.authorize_access_token()
+    facebook_user_data = facebook_oauth.facebook.get(
+        "https://graph.facebook.com/me?fields=id,name,email,picture{url}"
+    ).json()
+
+    email = facebook_user_data["email"]
+    user = User.get_or_none(User.email == email)
+    if user:
+        login_user(user)
+        flash(u"Login successful", 'success')
+        return redirect(url_for('sessions.check_redirect'))
+    else:
+        flash(u"You do not have an account. Please sign up", 'info')
+        return redirect(url_for('users.new'))
+
+
 
 
 
