@@ -18,7 +18,7 @@ def send_async_email(receiver_email, subject, contents):
     return requests.post(
         f"https://api.mailgun.net/v3/{mailgun_domain}/messages",
         auth=("api", os.environ.get("MAILGUN_API_KEY")),
-        data={"from": f"Nextagram Admin <mailgun@{mailgun_domain}>",
+        data={"from": f"Nextagram Admin <nextagram-admin@{mailgun_domain}>",
               "to": [f"{receiver_email}"],
               "subject": f"{subject}",
               "html": f"{contents}"})
@@ -44,6 +44,13 @@ def send_email_reset(receiver_email, reset_token):
     url=f'{mydomain}/sessions/verify_token/{reset_token}'
     contents="""<html><head></head><body><p>Please click on the link below to set a new password </p> <br> <a href="{}">Click Here</a><br><p>You can ignore this email if you did not make this request </p></body></html>""".format(url)
     Thread(target=send_async_email, args=(receiver_email, subject, contents)).start()
+
+def send_email_contact(sender, contents):
+    receiver_email="choonhoe@gmail.com"
+    subject="Contact Form Submitted"
+    contents="""<html><head></head><body><p>Contact Email: {} </p><p>Message Content: </p> <p>{}</p></body></html>""".format(sender, contents)
+    Thread(target=send_async_email, args=(receiver_email, subject, contents)).start()
+    
     
 
 

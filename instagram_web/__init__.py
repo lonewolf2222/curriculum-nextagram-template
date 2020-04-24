@@ -1,5 +1,5 @@
 from app import app
-from flask import render_template, redirect, url_for, session, abort
+from flask import render_template, request, redirect, url_for, session, abort, flash
 from instagram_web.blueprints.users.views import users_blueprint
 from instagram_web.blueprints.sessions.views import sessions_blueprint
 from instagram_web.blueprints.images.views import images_blueprint
@@ -10,6 +10,8 @@ from .util.assets import bundles
 from instagram_web.util.google_oauth import oauth
 from instagram_web.util.facebook_oauth import facebook_oauth
 from flask_session import Session
+from models.form import ContactForm
+from instagram_web.util.sendmail import send_email_contact
 
 
 oauth.init_app(app)
@@ -45,3 +47,17 @@ def page_forbidden(e):
 @app.route("/")
 def home(): 
     return redirect(url_for('users.index'))
+
+@app.route("/contact", methods=['GET','POST'])
+def contact():
+    form=ContactForm(request.form)
+    if not form.validate_on_submit():
+        return render_template('contact.html', form=form)
+    if request.method == 'POST':
+        contents = request.form.get('contents')
+        sender = request.form.get('email')
+        send_email_contact(sender, contents)
+        flash(u"Submitted",'info')
+        return redirect(url_for('home'))
+
+

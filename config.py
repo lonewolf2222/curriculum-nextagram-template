@@ -22,6 +22,10 @@ class Config(object):
     SESSION_TYPE = os.environ.get("SESSION_TYPE")
     SESSION_REDIS = redis.from_url(os.environ.get("REDIS_URL"))
 
+    RECAPTCHA_USE_SSL = False
+    RECAPTCHA_PUBLIC_KEY = os.environ.get("RECAPTCHA_SITE_KEY")
+    RECAPTCHA_PRIVATE_KEY = os.environ.get("RECAPTCHA_SECRET_KEY")
+
 class ProductionConfig(Config):
     DEBUG = False
     ASSETS_DEBUG = False
