@@ -46,7 +46,7 @@ def send_email_reset(receiver_email, reset_token):
     Thread(target=send_async_email, args=(receiver_email, subject, contents)).start()
 
 def send_email_contact(sender, contents):
-    receiver_email="choonhoe@gmail.com"
+    receiver_email=os.environ.get("ADMIN_EMAIL")
     subject="Contact Form Submitted"
     contents="""<html><head></head><body><p>Contact Email: {} </p><p>Message Content: </p> <p>{}</p></body></html>""".format(sender, contents)
     Thread(target=send_async_email, args=(receiver_email, subject, contents)).start()
