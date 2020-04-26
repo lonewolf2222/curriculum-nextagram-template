@@ -1,6 +1,6 @@
 raw_env = [
     "FLASK_ENV=production"
-    "DATABASE_URL=postgres://postgres:password@localhost:5432/nextagram_dev",
+    "DATABASE_URL=postgres://postgres:password@localhost:5432/nextagram_prod",
     "SECRET_KEY= ",
     "DB_TIMEOUT=300",
     "DB_POOL=10",
