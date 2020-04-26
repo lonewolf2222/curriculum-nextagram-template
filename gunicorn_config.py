@@ -1,0 +1,27 @@
+raw_env = [
+    "FLASK_ENV=production"
+    "DATABASE_URL=postgres://postgres:password@localhost:5432/nextagram_dev",
+    "SECRET_KEY= ",
+    "DB_TIMEOUT=300",
+    "DB_POOL=10",
+    "S3_BUCKET_NAME= ",
+    "S3_ACCESS_KEY= ",
+    "S3_SECRET_ACCESS_KEY= ",
+    "AWS_S3_DOMAIN= ",
+    "BT_MERCHANT_ID= ",
+    "BT_PUBLIC_KEY= ",
+    "BT_PRIVATE_KEY= ",
+    "MAILGUN_API_KEY= ",
+    "MAILGUN_DOMAIN= mail.sg.leapnet.me",
+    "GOOGLE_CLIENT_ID= ",
+    "GOOGLE_CLIENT_SECRET= ",
+    "JWT_SECRET_KEY= ",
+    "SESSION_TYPE=redis",
+    "REDIS_URL=redis://localhost:6379",
+    "MY_DOMAIN=https://webapp.leapnet.me",
+    "FB_CLIENT_ID= ",
+    "FB_CLIENT_SECRET= ",
+    "RECAPTCHA_SITE_KEY= ",
+    "RECAPTCHA_SECRET_KEY=",
+    "ADMIN_EMAIL= "
+]

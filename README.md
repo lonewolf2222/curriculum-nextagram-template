@@ -1,155 +1,85 @@
-# Flask Nextagram Template
+# Fork of Next Academy Flask Nextagram
 
-version 0.0.1 (alpha)
+version 0.1 (beta)
 
-## Development
+## Production
 
-**Make a fork before cloning**
+**Full Stack Bootcamp final exercise on Python/Flask.**
 
-**Install dependencies**
+**With some additional functions**
 
-- Python 3.7.2 was tested
-- Postgresql 10.3 was tested
+- Pagination
+- Facebook Login
+- Reset Password
+- Contact Form with Recaptcha v2
 
-1. Delete `peewee-db-evolve==3.7.0` from `requirements.txt` during the first installation.
-   Because of how `peewee-db-evolve` created it's build process, we would first need to delete it.
-1. Run:
-   ```
-   pip install -r requirements.txt
-   ```
-1. Now add `peewee-db-evolve==3.7.0` back into `requirements.txt`
-1. Run again:
-   ```
-   pip install -r requirements.txt
-   ```
+**Deployed and tested on Heroku and VPS running Debian 9**
 
-If you're having trouble installing dependencies
+**Steps to deploy on Debian 9 VPS**
 
-- Remove `certifi==2018.11.29` from requirements.txt
+1. SSH into VPS and run apt update && apt upgrade
 
-If you're having trouble starting flask
+2. apt install the following packages
+   - postgresql and postgresql-contrib
+   - gcc
+   - redis-server
+   - nginx
+   - certbot and python-certbot
+   - supervisor
 
-- Restart your terminal as well and reactivate conda source
+3. Git clone from repo to /home folder
 
-**Create a `.env` file at the root of the directory**
+4. Download and install Ananconda for Linux
 
-This project uses `python-dotenv`. When running commands using `flask`, environment variables from `.env` are automatically loaded.
+5. Create and activate virtual env
 
-When executing `python` scripts directly e.g. `python start.py`, environment variables are not loaded and will not work except `python migrate.py` _(read the script - `migrate.py` to know why it would load the environment variables `.env`)_
+6. Replace psycopg2-binary in requirements.txt with psycopg2-binary==2.8.5. 
 
-Minimum environment variables that needs to be set
+7. pip install -r requirements.txt
 
-```
-FLASK_APP='start' # based on the name of our entry point script
-FLASK_ENV='development' # use this in development, otherwise 'production' or 'test'
-DATABASE_URL="postgres://localhost:5432/nextagram_dev"
-SECRET_KEY= #generate your own key
-```
+8. su - postgres &&  psql -d template1 -c "ALTER USER postgres WITH PASSWORD 'newpassword';"
 
-Use `os.urandom(32)` to generate a random secret key and paste that in `.env`. It's important to keep this `SECRET_KEY` private.
+9. adjust postgres user password in .env and source .env
 
-Since this app uses Pooled Connections, you may also want to set:
+10. while still su - postgres run createdb /dev/nextagram_prod && python migrate.py 
 
-```
-DB_TIMEOUT=300 # 5 minutes
-DB_POOL=5
-```
+11. exit back to conda env
 
-_(see `database.py`)_
+12. cd /etc/nginx/sites-enabled and delete the default file in the folder. create file nextagram with following content:
 
-**Create a Database**
+server {
+    server_name webapp.leapnet.me;
 
-- this application is configured to use Postgresql
+    location / {
+        proxy_pass http://127.0.0.1:8000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+	proxy_set_header X-Forwarded-Proto $scheme;
+    }
 
-```
-createdb nextagram_dev
-```
+13. run certbot to obtain let's encrypt ssl certs
 
-_\*if you name your database something else, tweak the settings in `.env`_
+14. fill in values for env vars in gunicorn_config.py
 
-**Ignoring Files from Git**
+15. test run with command
+    /home/anaconda3/envs/nextagram/bin/gunicorn --workers=3 -c /home/curriculum-nextagram-template/gunicorn_config.py start:app
 
-Before git commiting, remember to ignore key files. Here's an example of `.gitignore`
+16. cd /etc/supervisor/conf.d and create file nextagram.conf with following contents:
 
-```
-.vscode
-*.DS_Store
-*__pycache__
-*.env
-```
+[program:start]
+command=/home/anaconda3/envs/nextagram/bin/gunicorn --workers=3 -c /home/curriculum-nextagram-template/gunicorn_config.py start:app
 
----
+directory=/home/curriculum-nextagram-template
+autostart=true
+autorestart=true
+stopasgroup=true
+killasgroup=true
+stderr_logfile=/var/log/nextagram/nextagram.err.log
+stdout_logfile=/var/log/nextagram/nextagram.out.log
 
-## Database Migrations
+17. touch /var/log/nextagram/nextagram.err.log && touch /var/log/nextagram/nextagram.out.log
 
-```
-python migrate.py
-```
-
-\*_this template is configured to use Peewee's PooledConnection, however, migrations using Peewee-DB-Evolve doesn't work well. A hack was used to not use PooledConnection when running migration. Pending investigation. There are no known side effects to run this template in production._
-
-## Starting Server
-
-```
-flask run
-```
-
-## Starting Shell
-
-```
-flask shell
-```
-
----
-
-## Deploying to Production
-
-- ensure environment variables are configured appropriately
-- migrations will not run in interactive mode when FLASK_ENV is set to 'production'
-- It's important to set your own `SECRET_KEY` environment variable and keep that private.
-
----
-
-## Architecture
-
-This template separates out API and Web to separate packages. Both API and Web are configured to use Flask's Blueprints.
-
-All new models should go into it's own file/script within the models directory.
-
-The entry point for a Flask server to start is located at `start.py`
-
----
-
-## Dependencies
-
-This template was created against `Python 3.7`. Should work with newer versions of Python. Not tested with older versions.
-
-`Peewee` is used as ORM along with a database migration library `peewee-db-evolve`.
-
-This template also comes packaged with Bootstrap 4.1.3 and it's dependencies (jQuery).
-
-A copy of requirements.txt is included in the repository.
-
-```
-autopep8==1.4.3
-certifi==2018.11.29
-Click==7.0
-colorama==0.4.1
-Flask==1.0.2
-Flask-Cors==3.0.7
-itsdangerous==1.1.0
-Jinja2==2.10
-MarkupSafe==1.1.0
-peewee==3.8.2
-peewee-db-evolve==3.7.0
-psycopg2-binary==2.7.7
-pycodestyle==2.5.0
-python-dotenv==0.10.1
-six==1.12.0
-Werkzeug==0.14.1
-```
-
-Remove `certifi==2018.11.29` if you're having trouble installing dependencies.
+18. systemctl restart supervisor
 
 ---
 
