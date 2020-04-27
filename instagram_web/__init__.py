@@ -12,8 +12,9 @@ from instagram_web.util.facebook_oauth import facebook_oauth
 from flask_session import Session
 from models.form import ContactForm
 from instagram_web.util.sendmail import send_email_contact
+from werkzeug.contrib.fixers import ProxyFix
 
-
+app.wsgi_app = ProxyFix(app.wsgi_app)  # remove or comment this out if deploying to Heroku
 oauth.init_app(app)
 facebook_oauth.init_app(app)
 

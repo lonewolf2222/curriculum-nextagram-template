@@ -2,7 +2,10 @@ from models.base_model import BaseModel
 import peewee as pw
 from flask_login import UserMixin
 from playhouse.hybrid import hybrid_property, hybrid_method
-AWS_S3_DOMAIN = "http://lonewolf2222-storage.s3.amazonaws.com/"
+import os
+
+
+AWS_S3_DOMAIN = os.environ.get("AWS_S3_DOMAIN")
 
 class User(BaseModel, UserMixin):
     username = pw.CharField(unique=True)
