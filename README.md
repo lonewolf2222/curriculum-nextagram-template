@@ -84,6 +84,8 @@ server {
 17. cd /etc/supervisor/conf.d and create file nextagram.conf with following contents:
 <pre><code>
       [program:start]
+      command=/home/chchua/anaconda3/envs/nextagram/bin/gunicorn --workers=3 -c /home/chchua/curriculum
+-nextagram-template/gunicorn_config.py start:app
       directory=/home/curriculum-nextagram-template
       autostart=true
       autorestart=true
