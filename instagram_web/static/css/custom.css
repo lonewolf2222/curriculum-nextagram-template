@@ -22,11 +22,11 @@ footer a {
 
 /* Navbar links */
 .navbar a {
-  float: left;
-  text-align: center;
+  /* float: left; */
+  /* text-align: center; */
   padding: 8px;
   color:#28a745;
-  text-decoration: none;
+  /* text-decoration: none; */
   font-size: 17px;
 }
 
@@ -34,6 +34,15 @@ footer a {
 .navbar a:hover {
   background-color: grey;
 }
+
+/* .navbar a .nav-link {
+  float: left;
+  text-align: center;
+  padding: 8px;
+  color:#28a745;
+  text-decoration: none;
+  font-size: 17px;
+} */
 
 .form-control {
   width: 50%;
